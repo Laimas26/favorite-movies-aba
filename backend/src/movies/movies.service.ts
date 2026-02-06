@@ -5,6 +5,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { unlink } from 'node:fs/promises';
+import { join } from 'node:path';
 import { Movie } from './entities/movie.entity.js';
 import { CreateMovieDto } from './dto/create-movie.dto.js';
 import { UpdateMovieDto } from './dto/update-movie.dto.js';
@@ -59,21 +61,28 @@ export class MoviesService {
     return movie;
   }
 
-  async create(dto: CreateMovieDto, userId: string) {
+  async create(dto: CreateMovieDto, userId: string, imageFilename?: string) {
     const movie = this.moviesRepository.create({
       ...dto,
       userId,
+      ...(imageFilename && { image: imageFilename }),
     });
     return this.moviesRepository.save(movie);
   }
 
-  async update(id: string, dto: UpdateMovieDto, userId: string) {
+  async update(id: string, dto: UpdateMovieDto, userId: string, imageFilename?: string) {
     const movie = await this.moviesRepository.findOneBy({ id });
     if (!movie) {
       throw new NotFoundException('Movie not found');
     }
     if (movie.userId !== userId) {
       throw new ForbiddenException('You can only edit your own movies');
+    }
+    if (imageFilename) {
+      if (movie.image) {
+        this.deleteImageFile(movie.image);
+      }
+      movie.image = imageFilename;
     }
     Object.assign(movie, dto);
     return this.moviesRepository.save(movie);
@@ -87,7 +96,15 @@ export class MoviesService {
     if (movie.userId !== userId) {
       throw new ForbiddenException('You can only delete your own movies');
     }
+    if (movie.image) {
+      this.deleteImageFile(movie.image);
+    }
     await this.moviesRepository.remove(movie);
     return { message: 'Movie deleted successfully' };
+  }
+
+  private deleteImageFile(filename: string) {
+    const filePath = join(process.cwd(), 'uploads', filename);
+    unlink(filePath).catch(() => {});
   }
 }

@@ -78,14 +78,15 @@ export default function Movies() {
     setFormError(null);
     try {
       if (editingMovie) {
-        const result = await dispatch(updateMovie({ id: editingMovie.id, ...data }));
+        const result = await dispatch(updateMovie({ id: editingMovie.id, ...data, imageFile: data.imageFile }));
         if (updateMovie.rejected.match(result)) {
           setFormError(result.payload as string);
           setFormLoading(false);
           return;
         }
       } else {
-        const result = await dispatch(addMovie(data));
+        const { imageFile, ...movieData } = data;
+        const result = await dispatch(addMovie({ ...movieData, imageFile }));
         if (addMovie.rejected.match(result)) {
           setFormError(result.payload as string);
           setFormLoading(false);

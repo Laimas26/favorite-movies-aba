@@ -31,6 +31,9 @@ export class Movie {
   @Column({ nullable: true })
   notes: string;
 
+  @Column({ nullable: true })
+  image: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

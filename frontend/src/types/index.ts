@@ -13,6 +13,7 @@ export interface Movie {
   director: string;
   rating: number;
   notes: string | null;
+  image: string | null;
   createdAt: string;
   userId: string;
   user?: User;

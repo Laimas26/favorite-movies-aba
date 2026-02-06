@@ -11,6 +11,8 @@ interface Props {
   currentUserId: string | null;
 }
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 const COLUMNS = [
   { key: 'title', label: 'Title' },
   { key: 'year', label: 'Year' },
@@ -63,12 +65,23 @@ export default function MovieTable({
           {movies.map((movie) => (
             <tr key={movie.id}>
               <td>
-                <strong>{movie.title}</strong>
-                {movie.notes && (
-                  <div style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', marginTop: '2px' }}>
-                    {movie.notes}
+                <div className={styles.titleCell}>
+                  {movie.image && (
+                    <img
+                      className={styles.thumbnail}
+                      src={`${API_URL}/uploads/${movie.image}`}
+                      alt={movie.title}
+                    />
+                  )}
+                  <div>
+                    <strong>{movie.title}</strong>
+                    {movie.notes && (
+                      <div style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', marginTop: '2px' }}>
+                        {movie.notes}
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </td>
               <td>{movie.year}</td>
               <td>{movie.genre}</td>

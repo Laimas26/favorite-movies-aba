@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { Movie } from '../../types';
 import styles from './MovieForm.module.css';
 
@@ -17,7 +17,10 @@ export interface MovieFormData {
   director: string;
   rating: number;
   notes?: string;
+  imageFile?: File;
 }
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export default function MovieForm({ movie, onSubmit, onClose, loading, error }: Props) {
   const [title, setTitle] = useState(movie?.title ?? '');
@@ -26,10 +29,39 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
   const [director, setDirector] = useState(movie?.director ?? '');
   const [rating, setRating] = useState(movie?.rating ?? 7);
   const [notes, setNotes] = useState(movie?.notes ?? '');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    movie?.image ? `${API_URL}/uploads/${movie.image}` : null,
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({ title, year, genre, director, rating, notes: notes || undefined });
+    onSubmit({
+      title,
+      year,
+      genre,
+      director,
+      rating,
+      notes: notes || undefined,
+      imageFile: imageFile ?? undefined,
+    });
   };
 
   return (
@@ -39,6 +71,37 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
           {movie ? 'Edit Movie' : 'Add Movie'}
         </h2>
         <form onSubmit={handleSubmit}>
+          <div className={styles.field}>
+            <label className={styles.label}>Poster Image (optional)</label>
+            {imagePreview ? (
+              <div className={styles.imagePreview}>
+                <img src={imagePreview} alt="Preview" />
+                <button
+                  type="button"
+                  className={styles.removeImage}
+                  onClick={handleRemoveImage}
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <div
+                className={styles.uploadArea}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <div className={styles.uploadIcon}>&#128247;</div>
+                <p>Click to upload an image</p>
+                <span>JPEG, PNG, WebP or GIF</span>
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+            />
+          </div>
           <div className={styles.field}>
             <label className={styles.label}>Title</label>
             <input

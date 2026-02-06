@@ -10,3 +10,5 @@ coverage/
 .idea/
 .vscode/
 notes/
+backend/uploads/*
+!backend/uploads/.gitkeep

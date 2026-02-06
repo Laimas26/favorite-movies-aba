@@ -8,6 +8,7 @@ import {
   Max,
   MaxLength,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateMovieDto {
   @IsString()
@@ -15,6 +16,7 @@ export class CreateMovieDto {
   @MaxLength(255)
   title: string;
 
+  @Type(() => Number)
   @IsInt()
   @Min(1888)
   @Max(2030)
@@ -30,6 +32,7 @@ export class CreateMovieDto {
   @MaxLength(255)
   director: string;
 
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   @Max(10)

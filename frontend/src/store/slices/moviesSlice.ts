@@ -37,11 +37,29 @@ export const fetchMovies = createAsyncThunk(
   },
 );
 
+interface AddMoviePayload {
+  title: string;
+  year: number;
+  genre: string;
+  director: string;
+  rating: number;
+  notes?: string;
+  imageFile?: File;
+}
+
 export const addMovie = createAsyncThunk(
   'movies/addMovie',
-  async (data: Omit<Movie, 'id' | 'createdAt' | 'userId' | 'user'>, { rejectWithValue }) => {
+  async (data: AddMoviePayload, { rejectWithValue }) => {
     try {
-      const response = await api.post('/movies', data);
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('year', String(data.year));
+      formData.append('genre', data.genre);
+      formData.append('director', data.director);
+      formData.append('rating', String(data.rating));
+      if (data.notes) formData.append('notes', data.notes);
+      if (data.imageFile) formData.append('image', data.imageFile);
+      const response = await api.post('/movies', formData);
       return response.data as Movie;
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
@@ -50,11 +68,27 @@ export const addMovie = createAsyncThunk(
   },
 );
 
+interface UpdateMoviePayload {
+  id: string;
+  title?: string;
+  year?: number;
+  genre?: string;
+  director?: string;
+  rating?: number;
+  notes?: string;
+  imageFile?: File;
+}
+
 export const updateMovie = createAsyncThunk(
   'movies/updateMovie',
-  async ({ id, ...data }: Partial<Movie> & { id: string }, { rejectWithValue }) => {
+  async ({ id, imageFile, ...data }: UpdateMoviePayload, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`/movies/${id}`, data);
+      const formData = new FormData();
+      for (const [key, value] of Object.entries(data)) {
+        if (value !== undefined) formData.append(key, String(value));
+      }
+      if (imageFile) formData.append('image', imageFile);
+      const response = await api.patch(`/movies/${id}`, formData);
       return response.data as Movie;
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
