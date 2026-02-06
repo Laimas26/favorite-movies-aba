@@ -1,0 +1,93 @@
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Movie } from './entities/movie.entity.js';
+import { CreateMovieDto } from './dto/create-movie.dto.js';
+import { UpdateMovieDto } from './dto/update-movie.dto.js';
+import { QueryMoviesDto } from './dto/query-movies.dto.js';
+
+@Injectable()
+export class MoviesService {
+  constructor(
+    @InjectRepository(Movie)
+    private readonly moviesRepository: Repository<Movie>,
+  ) {}
+
+  async findAll(query: QueryMoviesDto) {
+    const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC' } = query;
+
+    const qb = this.moviesRepository
+      .createQueryBuilder('movie')
+      .leftJoin('movie.user', 'user')
+      .addSelect(['user.id', 'user.name', 'user.email']);
+
+    if (search) {
+      qb.where('LOWER(movie.title) LIKE LOWER(:search)', {
+        search: `%${search}%`,
+      });
+    }
+
+    qb.orderBy(`movie.${sortBy}`, sortOrder);
+
+    const total = await qb.getCount();
+    const data = await qb
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async findOne(id: string) {
+    const movie = await this.moviesRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!movie) {
+      throw new NotFoundException('Movie not found');
+    }
+    return movie;
+  }
+
+  async create(dto: CreateMovieDto, userId: string) {
+    const movie = this.moviesRepository.create({
+      ...dto,
+      userId,
+    });
+    return this.moviesRepository.save(movie);
+  }
+
+  async update(id: string, dto: UpdateMovieDto, userId: string) {
+    const movie = await this.moviesRepository.findOneBy({ id });
+    if (!movie) {
+      throw new NotFoundException('Movie not found');
+    }
+    if (movie.userId !== userId) {
+      throw new ForbiddenException('You can only edit your own movies');
+    }
+    Object.assign(movie, dto);
+    return this.moviesRepository.save(movie);
+  }
+
+  async remove(id: string, userId: string) {
+    const movie = await this.moviesRepository.findOneBy({ id });
+    if (!movie) {
+      throw new NotFoundException('Movie not found');
+    }
+    if (movie.userId !== userId) {
+      throw new ForbiddenException('You can only delete your own movies');
+    }
+    await this.moviesRepository.remove(movie);
+    return { message: 'Movie deleted successfully' };
+  }
+}
