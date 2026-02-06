@@ -4,10 +4,7 @@ import styles from './AddMovieButton.module.css';
 
 const FUNNY_MESSAGES = [
   "Hey! This is MY favorite movies list. Get your own! \uD83D\uDE04",
-  "Nice try! Log in first... if I let you. \uD83E\uDD28",
   "You want to add YOUR movies to MY list? The audacity! \uD83D\uDE24",
-  "Authentication required. Also, this is my list, not yours. \uD83D\uDE0F",
-  "Okay I'll let you in... just kidding. Log in first! \uD83D\uDE1C",
 ];
 
 interface Props {
@@ -31,7 +28,9 @@ export default function AddMovieButton({ onClick }: Props) {
     setShowTooltip(true);
   };
 
-  if (user) {
+  const isAllowed = user?.email === 'laimonas.rupeika@gmail.com';
+
+  if (isAllowed) {
     return (
       <button className={styles.addButton} onClick={onClick}>
         + Add Movie
