@@ -95,6 +95,13 @@
   color: var(--color-warning);
 }
 
+.genreTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.2rem;
+}
+
 .notes {
   border-top: 1px solid var(--color-border);
   padding-top: 1.25rem;

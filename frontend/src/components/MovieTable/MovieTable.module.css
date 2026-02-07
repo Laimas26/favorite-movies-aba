@@ -107,6 +107,82 @@
   color: var(--color-primary);
 }
 
+.chevron {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  width: 0.75rem;
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+.genreCell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.genreCount {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.expandedParent td {
+  border-bottom: none;
+}
+
+.expandedRow td {
+  padding: 0 1rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(99, 102, 241, 0.03);
+}
+
+.expandedRow:hover td {
+  background: rgba(99, 102, 241, 0.03);
+}
+
+.expandedContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--color-border);
+  margin-left: 0.375rem;
+}
+
+.expandedSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.expandedLabel {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.genreTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.expandedNotes {
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
 .empty {
   text-align: center;
   padding: 3rem 1rem;

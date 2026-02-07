@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { fetchMovieById, clearCurrentMovie, deleteMovie, updateMovie } from '../../store/slices/moviesSlice';
 import MovieForm from '../../components/MovieForm/MovieForm';
 import type { MovieFormData } from '../../components/MovieForm/MovieForm';
+import GenreTag from '../../components/GenreTag/GenreTag';
 import styles from './MovieDetail.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -87,7 +88,11 @@ export default function MovieDetail() {
             </div>
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Genre</span>
-              <span className={styles.metaValue}>{movie.genre}</span>
+              <div className={styles.genreTags}>
+                {movie.genres.map((g, i) => (
+                  <GenreTag key={g} genre={g} isMain={i === 0} size="md" />
+                ))}
+              </div>
             </div>
             <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Director</span>

@@ -1,5 +1,7 @@
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Movie } from '../../types';
+import GenreTag from '../GenreTag/GenreTag';
 import styles from './MovieTable.module.css';
 
 interface Props {
@@ -17,7 +19,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const COLUMNS = [
   { key: 'title', label: 'Title' },
   { key: 'year', label: 'Year' },
-  { key: 'genre', label: 'Genre' },
+  { key: 'genres', label: 'Genre' },
   { key: 'director', label: 'Director' },
   { key: 'rating', label: 'Rating' },
 ];
@@ -31,6 +33,20 @@ export default function MovieTable({
   onDelete,
   currentUserId,
 }: Props) {
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+
+  const toggleRow = (id: string) => {
+    setExpandedRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
   if (movies.length === 0) {
     return (
       <div className={styles.empty}>
@@ -63,55 +79,97 @@ export default function MovieTable({
           </tr>
         </thead>
         <tbody>
-          {movies.map((movie) => (
-            <tr key={movie.id}>
-              <td>
-                <div className={styles.titleCell}>
-                  {movie.image && (
-                    <img
-                      className={styles.thumbnail}
-                      src={`${API_URL}/uploads/${movie.image}`}
-                      alt={movie.title}
-                    />
-                  )}
-                  <div>
-                    <Link to={`/movies/${movie.id}`} className={styles.titleLink}>
-                      {movie.title}
-                    </Link>
-                    {movie.notes && (
-                      <div style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', marginTop: '2px' }}>
-                        {movie.notes}
+          {movies.map((movie) => {
+            const isExpanded = expandedRows.has(movie.id);
+            const colCount = COLUMNS.length + (currentUserId ? 1 : 0);
+
+            return (
+              <React.Fragment key={movie.id}>
+                <tr
+                  className={isExpanded ? styles.expandedParent : ''}
+                  onClick={() => toggleRow(movie.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <td>
+                    <div className={styles.titleCell}>
+                      <span className={`${styles.chevron} ${isExpanded ? styles.chevronOpen : ''}`}>
+                        &#9656;
+                      </span>
+                      {movie.image && (
+                        <img
+                          className={styles.thumbnail}
+                          src={`${API_URL}/uploads/${movie.image}`}
+                          alt={movie.title}
+                        />
+                      )}
+                      <div>
+                        <Link
+                          to={`/movies/${movie.id}`}
+                          className={styles.titleLink}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {movie.title}
+                        </Link>
                       </div>
-                    )}
-                  </div>
-                </div>
-              </td>
-              <td>{movie.year}</td>
-              <td>{movie.genre}</td>
-              <td>{movie.director}</td>
-              <td className={styles.rating}>{movie.rating}/10</td>
-              {currentUserId && (
-                <td>
-                  {movie.userId === currentUserId && (
-                    <div className={styles.actions}>
-                      <button
-                        className={styles.editBtn}
-                        onClick={() => onEdit(movie)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className={styles.deleteBtn}
-                        onClick={() => onDelete(movie.id)}
-                      >
-                        Delete
-                      </button>
                     </div>
+                  </td>
+                  <td>{movie.year}</td>
+                  <td>
+                    <div className={styles.genreCell}>
+                      {movie.genres[0] && <GenreTag genre={movie.genres[0]} isMain />}
+                      {movie.genres.length > 1 && (
+                        <span className={styles.genreCount}>+{movie.genres.length - 1}</span>
+                      )}
+                    </div>
+                  </td>
+                  <td>{movie.director}</td>
+                  <td className={styles.rating}>{movie.rating}/10</td>
+                  {currentUserId && (
+                    <td>
+                      {movie.userId === currentUserId && (
+                        <div className={styles.actions}>
+                          <button
+                            className={styles.editBtn}
+                            onClick={(e) => { e.stopPropagation(); onEdit(movie); }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className={styles.deleteBtn}
+                            onClick={(e) => { e.stopPropagation(); onDelete(movie.id); }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </td>
                   )}
-                </td>
-              )}
-            </tr>
-          ))}
+                </tr>
+                {isExpanded && (
+                  <tr className={styles.expandedRow}>
+                    <td colSpan={colCount}>
+                      <div className={styles.expandedContent}>
+                        <div className={styles.expandedSection}>
+                          <span className={styles.expandedLabel}>Genres</span>
+                          <div className={styles.genreTags}>
+                            {movie.genres.map((g, i) => (
+                              <GenreTag key={g} genre={g} isMain={i === 0} />
+                            ))}
+                          </div>
+                        </div>
+                        {movie.notes && (
+                          <div className={styles.expandedSection}>
+                            <span className={styles.expandedLabel}>Notes</span>
+                            <p className={styles.expandedNotes}>{movie.notes}</p>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            );
+          })}
         </tbody>
       </table>
     </div>
