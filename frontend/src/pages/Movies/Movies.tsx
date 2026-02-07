@@ -17,6 +17,7 @@ import SearchBar from '../../components/SearchBar/SearchBar';
 import Pagination from '../../components/Pagination/Pagination';
 import AddMovieButton from '../../components/AddMovieButton/AddMovieButton';
 import type { Movie } from '../../types';
+import catDirector from '../../assets/cat-director.png';
 import styles from './Movies.module.css';
 
 export default function Movies() {
@@ -31,12 +32,17 @@ export default function Movies() {
     return (
       <div className={styles.page}>
         <div className={styles.authGate}>
-          <div className={styles.authGateIcon}>🎬</div>
+          <div className={styles.authGateIcon}>&#127916;</div>
           <h2>Hold on!</h2>
           <p>You need to log in to see my fabulous movie list.</p>
           <Link to="/login" className={styles.authGateBtn}>
             Log in
           </Link>
+          <img
+            src={catDirector}
+            alt="Cat director pointing at login"
+            className={styles.catImage}
+          />
         </div>
       </div>
     );
