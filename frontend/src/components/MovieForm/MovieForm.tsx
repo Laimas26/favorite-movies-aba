@@ -48,6 +48,7 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const mouseDownOnOverlay = useRef(false);
 
   // Image & crop state — cropper is always visible when imageSrc exists
   const [imageSrc, setImageSrc] = useState<string | null>(
@@ -120,8 +121,12 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+    <div
+      className={styles.overlay}
+      onMouseDown={(e) => { mouseDownOnOverlay.current = e.target === e.currentTarget; }}
+      onMouseUp={(e) => { if (mouseDownOnOverlay.current && e.target === e.currentTarget) onClose(); }}
+    >
+      <div className={styles.modal}>
         <h2 className={styles.title}>
           {movie ? 'Edit Movie' : 'Add Movie'}
         </h2>
