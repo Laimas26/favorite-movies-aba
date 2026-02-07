@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { logout } from '../../store/slices/authSlice';
+import logo from '../../assets/logo.png';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
@@ -10,15 +11,17 @@ export default function Navbar() {
   return (
     <nav className={styles.navbar}>
       <Link to="/" className={styles.logo}>
-        MyMovies <span>/ favorites</span>
+        <img src={logo} alt="Not Your Movies" className={styles.logoImg} />
       </Link>
-      <div className={styles.actions}>
-        <Link to="/" className={styles.link}>
+      <div className={styles.navLinks}>
+        <Link to="/" className={styles.navLink}>
           My list
         </Link>
-        <Link to="/about" className={styles.link}>
+        <Link to="/about" className={styles.navLink}>
           About
         </Link>
+      </div>
+      <div className={styles.actions}>
         {user ? (
           <>
             <Link to="/profile" className={styles.userLink}>
