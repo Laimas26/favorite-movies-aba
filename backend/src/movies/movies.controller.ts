@@ -49,11 +49,13 @@ const imageFilter = (
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query() query: QueryMoviesDto) {
     return this.moviesService.findAll(query);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.moviesService.findOne(id);

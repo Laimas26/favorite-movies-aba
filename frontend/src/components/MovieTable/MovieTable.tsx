@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { Movie } from '../../types';
 import styles from './MovieTable.module.css';
 
@@ -74,7 +75,9 @@ export default function MovieTable({
                     />
                   )}
                   <div>
-                    <strong>{movie.title}</strong>
+                    <Link to={`/movies/${movie.id}`} className={styles.titleLink}>
+                      {movie.title}
+                    </Link>
                     {movie.notes && (
                       <div style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem', marginTop: '2px' }}>
                         {movie.notes}

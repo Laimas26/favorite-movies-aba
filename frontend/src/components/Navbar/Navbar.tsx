@@ -13,9 +13,14 @@ export default function Navbar() {
         MyMovies <span>/ favorites</span>
       </Link>
       <div className={styles.actions}>
+        <Link to="/about" className={styles.link}>
+          About
+        </Link>
         {user ? (
           <>
-            <span className={styles.userName}>{user.name}</span>
+            <Link to="/profile" className={styles.userLink}>
+              {user.name}
+            </Link>
             <button
               className={styles.logoutBtn}
               onClick={() => dispatch(logout())}

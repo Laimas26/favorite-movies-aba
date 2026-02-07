@@ -14,6 +14,9 @@ interface MoviesState {
   sortOrder: 'ASC' | 'DESC';
   loading: boolean;
   error: string | null;
+  currentMovie: Movie | null;
+  currentMovieLoading: boolean;
+  currentMovieError: string | null;
 }
 
 const initialState: MoviesState = {
@@ -27,6 +30,9 @@ const initialState: MoviesState = {
   sortOrder: 'DESC',
   loading: false,
   error: null,
+  currentMovie: null,
+  currentMovieLoading: false,
+  currentMovieError: null,
 };
 
 export const fetchMovies = createAsyncThunk(
@@ -97,6 +103,19 @@ export const updateMovie = createAsyncThunk(
   },
 );
 
+export const fetchMovieById = createAsyncThunk(
+  'movies/fetchMovieById',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/movies/${id}`);
+      return response.data as Movie;
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      return rejectWithValue(error.response?.data?.message || 'Movie not found');
+    }
+  },
+);
+
 export const deleteMovie = createAsyncThunk(
   'movies/deleteMovie',
   async (id: string, { rejectWithValue }) => {
@@ -130,6 +149,10 @@ const moviesSlice = createSlice({
       }
       state.page = 1;
     },
+    clearCurrentMovie(state) {
+      state.currentMovie = null;
+      state.currentMovieError = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -162,9 +185,21 @@ const moviesSlice = createSlice({
       .addCase(deleteMovie.fulfilled, (state, action) => {
         state.movies = state.movies.filter((m) => m.id !== action.payload);
         state.total -= 1;
+      })
+      .addCase(fetchMovieById.pending, (state) => {
+        state.currentMovieLoading = true;
+        state.currentMovieError = null;
+      })
+      .addCase(fetchMovieById.fulfilled, (state, action) => {
+        state.currentMovieLoading = false;
+        state.currentMovie = action.payload;
+      })
+      .addCase(fetchMovieById.rejected, (state, action) => {
+        state.currentMovieLoading = false;
+        state.currentMovieError = action.payload as string;
       });
   },
 });
 
-export const { setPage, setSearch, setSortBy } = moviesSlice.actions;
+export const { setPage, setSearch, setSortBy, clearCurrentMovie } = moviesSlice.actions;
 export default moviesSlice.reducer;

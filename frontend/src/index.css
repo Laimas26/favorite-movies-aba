@@ -37,3 +37,9 @@ a {
 input, button, textarea {
   font-family: inherit;
 }
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
