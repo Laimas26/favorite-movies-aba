@@ -21,7 +21,7 @@ export default function App() {
       <Navbar />
       <main style={{ flex: 1 }}>
         <Routes>
-          <Route path="/" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
+          <Route path="/" element={<Movies />} />
           <Route path="/movies/:id" element={<ProtectedRoute><MovieDetail /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/about" element={<About />} />

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   fetchMovies,
@@ -25,6 +26,21 @@ export default function Movies() {
   const { user } = useAppSelector((state) => state.auth);
 
   const [showForm, setShowForm] = useState(false);
+
+  if (!user) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.authGate}>
+          <div className={styles.authGateIcon}>🎬</div>
+          <h2>Hold on!</h2>
+          <p>You need to log in to see my fabulous movie list.</p>
+          <Link to="/login" className={styles.authGateBtn}>
+            Log in
+          </Link>
+        </div>
+      </div>
+    );
+  }
   const [editingMovie, setEditingMovie] = useState<Movie | undefined>();
   const [formError, setFormError] = useState<string | null>(null);
   const [formLoading, setFormLoading] = useState(false);

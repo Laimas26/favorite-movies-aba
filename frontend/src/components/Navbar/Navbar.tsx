@@ -13,6 +13,9 @@ export default function Navbar() {
         MyMovies <span>/ favorites</span>
       </Link>
       <div className={styles.actions}>
+        <Link to="/" className={styles.link}>
+          My list
+        </Link>
         <Link to="/about" className={styles.link}>
           About
         </Link>
