@@ -3,6 +3,7 @@ import Cropper from 'react-easy-crop';
 import type { Area, Point } from 'react-easy-crop';
 import type { Movie } from '../../types';
 import cropImage from '../../utils/cropImage';
+import GenreTagPicker from '../GenreTagPicker/GenreTagPicker';
 import styles from './MovieForm.module.css';
 
 interface Props {
@@ -16,7 +17,7 @@ interface Props {
 export interface MovieFormData {
   title: string;
   year: number;
-  genre: string;
+  genres: string[];
   director: string;
   rating: number;
   notes?: string;
@@ -28,7 +29,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 export default function MovieForm({ movie, onSubmit, onClose, loading, error }: Props) {
   const [title, setTitle] = useState(movie?.title ?? '');
   const [year, setYear] = useState(movie?.year ?? new Date().getFullYear());
-  const [genre, setGenre] = useState(movie?.genre ?? '');
+  const [genres, setGenres] = useState<string[]>(movie?.genres ?? []);
   const [director, setDirector] = useState(movie?.director ?? '');
   const [rating, setRating] = useState(movie?.rating ?? 7);
   const [notes, setNotes] = useState(movie?.notes ?? '');
@@ -71,10 +72,12 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
       imageFile = await cropImage(imageSrc, croppedAreaPixels);
     }
 
+    if (genres.length === 0) return;
+
     onSubmit({
       title,
       year,
-      genre,
+      genres,
       director,
       rating,
       notes: notes || undefined,
@@ -182,14 +185,7 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
           </div>
           <div className={styles.field}>
             <label className={styles.label}>Genre</label>
-            <input
-              className={styles.input}
-              type="text"
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              required
-              placeholder="e.g. Drama"
-            />
+            <GenreTagPicker selectedGenres={genres} onChange={setGenres} />
           </div>
           <div className={styles.field}>
             <label className={styles.label}>Director</label>

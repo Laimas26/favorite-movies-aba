@@ -9,7 +9,7 @@ export interface Movie {
   id: string;
   title: string;
   year: number;
-  genre: string;
+  genres: string[];
   director: string;
   rating: number;
   notes: string | null;

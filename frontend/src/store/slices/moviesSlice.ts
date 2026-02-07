@@ -46,7 +46,7 @@ export const fetchMovies = createAsyncThunk(
 interface AddMoviePayload {
   title: string;
   year: number;
-  genre: string;
+  genres: string[];
   director: string;
   rating: number;
   notes?: string;
@@ -60,7 +60,7 @@ export const addMovie = createAsyncThunk(
       const formData = new FormData();
       formData.append('title', data.title);
       formData.append('year', String(data.year));
-      formData.append('genre', data.genre);
+      formData.append('genres', JSON.stringify(data.genres));
       formData.append('director', data.director);
       formData.append('rating', String(data.rating));
       if (data.notes) formData.append('notes', data.notes);
@@ -78,7 +78,7 @@ interface UpdateMoviePayload {
   id: string;
   title?: string;
   year?: number;
-  genre?: string;
+  genres?: string[];
   director?: string;
   rating?: number;
   notes?: string;
@@ -91,7 +91,9 @@ export const updateMovie = createAsyncThunk(
     try {
       const formData = new FormData();
       for (const [key, value] of Object.entries(data)) {
-        if (value !== undefined) formData.append(key, String(value));
+        if (value !== undefined) {
+          formData.append(key, key === 'genres' ? JSON.stringify(value) : String(value));
+        }
       }
       if (imageFile) formData.append('image', imageFile);
       const response = await api.patch(`/movies/${id}`, formData);
