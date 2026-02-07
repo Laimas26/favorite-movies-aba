@@ -1,5 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
+import Cropper from 'react-easy-crop';
+import type { Area, Point } from 'react-easy-crop';
 import type { Movie } from '../../types';
+import cropImage from '../../utils/cropImage';
 import styles from './MovieForm.module.css';
 
 interface Props {
@@ -29,30 +32,45 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
   const [director, setDirector] = useState(movie?.director ?? '');
   const [rating, setRating] = useState(movie?.rating ?? 7);
   const [notes, setNotes] = useState(movie?.notes ?? '');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Image & crop state — cropper is always visible when imageSrc exists
+  const [imageSrc, setImageSrc] = useState<string | null>(
     movie?.image ? `${API_URL}/uploads/${movie.image}` : null,
   );
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+
+  const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
+    setCroppedAreaPixels(croppedPixels);
+  }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+      setImageSrc(URL.createObjectURL(file));
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
     }
   };
 
   const handleRemoveImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
+    setImageSrc(null);
+    setCroppedAreaPixels(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    let imageFile: File | undefined;
+    if (imageSrc && croppedAreaPixels) {
+      imageFile = await cropImage(imageSrc, croppedAreaPixels);
+    }
+
     onSubmit({
       title,
       year,
@@ -60,7 +78,7 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
       director,
       rating,
       notes: notes || undefined,
-      imageFile: imageFile ?? undefined,
+      imageFile,
     });
   };
 
@@ -73,16 +91,38 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
         <form onSubmit={handleSubmit}>
           <div className={styles.field}>
             <label className={styles.label}>Poster Image (optional)</label>
-            {imagePreview ? (
-              <div className={styles.imagePreview}>
-                <img src={imagePreview} alt="Preview" />
-                <button
-                  type="button"
-                  className={styles.removeImage}
-                  onClick={handleRemoveImage}
-                >
-                  Remove
-                </button>
+            {imageSrc ? (
+              <div className={styles.cropContainer}>
+                <div className={styles.cropArea}>
+                  <Cropper
+                    image={imageSrc}
+                    crop={crop}
+                    zoom={zoom}
+                    aspect={2 / 3}
+                    onCropChange={setCrop}
+                    onZoomChange={setZoom}
+                    onCropComplete={onCropComplete}
+                  />
+                </div>
+                <div className={styles.zoomRow}>
+                  <label className={styles.zoomLabel}>Zoom</label>
+                  <input
+                    type="range"
+                    className={styles.zoomSlider}
+                    min={1}
+                    max={3}
+                    step={0.05}
+                    value={zoom}
+                    onChange={(e) => setZoom(Number(e.target.value))}
+                  />
+                  <button
+                    type="button"
+                    className={styles.removeImageBtn}
+                    onClick={handleRemoveImage}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             ) : (
               <div
