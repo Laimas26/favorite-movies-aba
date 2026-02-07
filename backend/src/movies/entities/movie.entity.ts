@@ -19,8 +19,8 @@ export class Movie {
   @Column()
   year: number;
 
-  @Column()
-  genre: string;
+  @Column('jsonb', { default: [] })
+  genres: string[];
 
   @Column()
   director: string;

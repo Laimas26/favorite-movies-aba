@@ -20,7 +20,7 @@ export class QueryMoviesDto {
   search?: string;
 
   @IsOptional()
-  @IsIn(['title', 'year', 'genre', 'director', 'rating', 'createdAt'])
+  @IsIn(['title', 'year', 'genres', 'director', 'rating', 'createdAt'])
   sortBy?: string = 'createdAt';
 
   @IsOptional()

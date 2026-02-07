@@ -4,11 +4,13 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
+  IsArray,
+  ArrayMinSize,
   Min,
   Max,
   MaxLength,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 
 export class CreateMovieDto {
   @IsString()
@@ -22,10 +24,13 @@ export class CreateMovieDto {
   @Max(2030)
   year: number;
 
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
-  genre: string;
+  @Transform(({ value }) =>
+    typeof value === 'string' ? JSON.parse(value) : value,
+  )
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsString({ each: true })
+  genres: string[];
 
   @IsString()
   @IsNotEmpty()

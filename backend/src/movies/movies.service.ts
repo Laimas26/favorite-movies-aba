@@ -2,6 +2,8 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  OnModuleInit,
+  Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,11 +15,33 @@ import { UpdateMovieDto } from './dto/update-movie.dto.js';
 import { QueryMoviesDto } from './dto/query-movies.dto.js';
 
 @Injectable()
-export class MoviesService {
+export class MoviesService implements OnModuleInit {
+  private readonly logger = new Logger(MoviesService.name);
+
   constructor(
     @InjectRepository(Movie)
     private readonly moviesRepository: Repository<Movie>,
   ) {}
+
+  async onModuleInit() {
+    // One-time migration: convert old `genre` string column to `genres` jsonb
+    try {
+      const hasOldColumn = await this.moviesRepository.query(
+        `SELECT column_name FROM information_schema.columns WHERE table_name = 'movies' AND column_name = 'genre'`,
+      );
+      if (hasOldColumn.length > 0) {
+        await this.moviesRepository.query(
+          `UPDATE movies SET genres = jsonb_build_array(genre) WHERE genres = '[]'::jsonb AND genre IS NOT NULL AND genre != ''`,
+        );
+        await this.moviesRepository.query(
+          `ALTER TABLE movies DROP COLUMN IF EXISTS genre`,
+        );
+        this.logger.log('Migrated genre → genres column');
+      }
+    } catch {
+      // Column may not exist yet on first run
+    }
+  }
 
   async findAll(query: QueryMoviesDto) {
     const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC' } = query;
@@ -33,7 +57,11 @@ export class MoviesService {
       });
     }
 
-    qb.orderBy(`movie.${sortBy}`, sortOrder);
+    if (sortBy === 'genres') {
+      qb.orderBy(`movie.genres->>0`, sortOrder);
+    } else {
+      qb.orderBy(`movie.${sortBy}`, sortOrder);
+    }
 
     const total = await qb.getCount();
     const data = await qb
