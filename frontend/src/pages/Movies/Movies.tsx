@@ -9,6 +9,7 @@ import {
   setPage,
   setSearch,
   setSortBy,
+  setYearRange,
 } from '../../store/slices/moviesSlice';
 import MovieTable from '../../components/MovieTable/MovieTable';
 import MovieForm from '../../components/MovieForm/MovieForm';
@@ -16,13 +17,14 @@ import type { MovieFormData } from '../../components/MovieForm/MovieForm';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import Pagination from '../../components/Pagination/Pagination';
 import AddMovieButton from '../../components/AddMovieButton/AddMovieButton';
+import YearRangeSlider from '../../components/YearRangeSlider/YearRangeSlider';
 import type { Movie } from '../../types';
 import catDirector from '../../assets/cat-director.png';
 import styles from './Movies.module.css';
 
 export default function Movies() {
   const dispatch = useAppDispatch();
-  const { movies, page, totalPages, total, search, sortBy, sortOrder, loading } =
+  const { movies, page, totalPages, total, search, sortBy, sortOrder, yearFrom, yearTo, loading } =
     useAppSelector((state) => state.movies);
   const { user } = useAppSelector((state) => state.auth);
 
@@ -52,8 +54,8 @@ export default function Movies() {
   const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchMovies({ page, search, sortBy, sortOrder }));
-  }, [dispatch, page, search, sortBy, sortOrder]);
+    dispatch(fetchMovies({ page, search, sortBy, sortOrder, yearFrom, yearTo }));
+  }, [dispatch, page, search, sortBy, sortOrder, yearFrom, yearTo]);
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -76,6 +78,13 @@ export default function Movies() {
     [dispatch],
   );
 
+  const handleYearRange = useCallback(
+    (from: number, to: number) => {
+      dispatch(setYearRange({ yearFrom: from, yearTo: to }));
+    },
+    [dispatch],
+  );
+
   const handleAddClick = () => {
     setEditingMovie(undefined);
     setFormError(null);
@@ -91,7 +100,7 @@ export default function Movies() {
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this movie?')) {
       await dispatch(deleteMovie(id));
-      dispatch(fetchMovies({ page, search, sortBy, sortOrder }));
+      dispatch(fetchMovies({ page, search, sortBy, sortOrder, yearFrom, yearTo }));
     }
   };
 
@@ -116,7 +125,7 @@ export default function Movies() {
         }
       }
       setShowForm(false);
-      dispatch(fetchMovies({ page, search, sortBy, sortOrder }));
+      dispatch(fetchMovies({ page, search, sortBy, sortOrder, yearFrom, yearTo }));
     } catch {
       setFormError('An unexpected error occurred');
     }
@@ -139,6 +148,17 @@ export default function Movies() {
       <div className={styles.toolbar}>
         <SearchBar value={search} onChange={handleSearch} />
         <AddMovieButton onClick={handleAddClick} />
+      </div>
+
+      <div className={styles.filterRow}>
+        <span className={styles.filterLabel}>Year</span>
+        <YearRangeSlider
+          min={1900}
+          max={2026}
+          valueFrom={yearFrom ?? 1900}
+          valueTo={yearTo ?? 2026}
+          onChange={handleYearRange}
+        />
       </div>
 
       {loading ? (

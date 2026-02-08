@@ -38,4 +38,6 @@ export interface QueryParams {
   search?: string;
   sortBy?: string;
   sortOrder?: 'ASC' | 'DESC';
+  yearFrom?: number;
+  yearTo?: number;
 }

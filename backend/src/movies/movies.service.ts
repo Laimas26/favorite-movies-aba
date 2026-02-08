@@ -44,7 +44,7 @@ export class MoviesService implements OnModuleInit {
   }
 
   async findAll(query: QueryMoviesDto) {
-    const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC' } = query;
+    const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC', yearFrom, yearTo } = query;
 
     const qb = this.moviesRepository
       .createQueryBuilder('movie')
@@ -55,6 +55,13 @@ export class MoviesService implements OnModuleInit {
       qb.where('LOWER(movie.title) LIKE LOWER(:search)', {
         search: `%${search}%`,
       });
+    }
+
+    if (yearFrom) {
+      qb.andWhere('movie.year >= :yearFrom', { yearFrom });
+    }
+    if (yearTo) {
+      qb.andWhere('movie.year <= :yearTo', { yearTo });
     }
 
     if (sortBy === 'genres') {

@@ -35,6 +35,21 @@
   flex-wrap: wrap;
 }
 
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  max-width: 350px;
+}
+
+.filterLabel {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
 .loading {
   text-align: center;
   padding: 3rem;

@@ -12,6 +12,8 @@ interface MoviesState {
   search: string;
   sortBy: string;
   sortOrder: 'ASC' | 'DESC';
+  yearFrom: number | undefined;
+  yearTo: number | undefined;
   loading: boolean;
   error: string | null;
   currentMovie: Movie | null;
@@ -28,6 +30,8 @@ const initialState: MoviesState = {
   search: '',
   sortBy: 'createdAt',
   sortOrder: 'DESC',
+  yearFrom: undefined,
+  yearTo: undefined,
   loading: false,
   error: null,
   currentMovie: null,
@@ -151,6 +155,11 @@ const moviesSlice = createSlice({
       }
       state.page = 1;
     },
+    setYearRange(state, action: PayloadAction<{ yearFrom?: number; yearTo?: number }>) {
+      state.yearFrom = action.payload.yearFrom;
+      state.yearTo = action.payload.yearTo;
+      state.page = 1;
+    },
     clearCurrentMovie(state) {
       state.currentMovie = null;
       state.currentMovieError = null;
@@ -203,5 +212,5 @@ const moviesSlice = createSlice({
   },
 });
 
-export const { setPage, setSearch, setSortBy, clearCurrentMovie } = moviesSlice.actions;
+export const { setPage, setSearch, setSortBy, setYearRange, clearCurrentMovie } = moviesSlice.actions;
 export default moviesSlice.reducer;

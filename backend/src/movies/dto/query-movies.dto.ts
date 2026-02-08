@@ -26,4 +26,14 @@ export class QueryMoviesDto {
   @IsOptional()
   @IsIn(['ASC', 'DESC'])
   sortOrder?: 'ASC' | 'DESC' = 'DESC';
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  yearFrom?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  yearTo?: number;
 }
