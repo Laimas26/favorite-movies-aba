@@ -3,6 +3,7 @@
   align-items: center;
   gap: 0.75rem;
   min-width: 200px;
+  flex: 1;
 }
 
 .label {
@@ -16,7 +17,7 @@
 .sliderWrapper {
   position: relative;
   flex: 1;
-  height: 24px;
+  height: 28px;
 }
 
 .track {
@@ -56,24 +57,36 @@
 .thumb::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  border: 2px solid var(--color-surface);
-  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 0;
+  background: transparent;
+  background-image: var(--cat-thumb);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  cursor: grab;
   pointer-events: auto;
   position: relative;
   z-index: 1;
 }
 
+.thumb:active::-webkit-slider-thumb {
+  cursor: grabbing;
+}
+
 .thumb::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  border: 2px solid var(--color-surface);
-  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 0;
+  background: transparent;
+  background-image: var(--cat-thumb);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  cursor: grab;
   pointer-events: auto;
   position: relative;
   z-index: 1;
