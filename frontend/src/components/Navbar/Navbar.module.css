@@ -95,35 +95,81 @@
   text-decoration: underline;
 }
 
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 1px;
+}
+
+.mobileMenu {
+  display: none;
+}
+
 @media (max-width: 480px) {
   .navbar {
-    height: 64px;
+    height: 56px;
     padding: 0 1rem;
+    flex-wrap: wrap;
   }
 
   .logoImg {
-    height: 80px;
+    height: 70px;
   }
 
-  .navLinks {
-    gap: 1rem;
-  }
-
-  .navLink {
-    font-size: 0.9rem;
-  }
-
+  .navLinks,
   .actions {
-    gap: 0.5rem;
+    display: none;
   }
 
-  .link,
-  .logoutBtn {
-    font-size: 0.75rem;
-    padding: 0.375rem 0.5rem;
+  .hamburger {
+    display: flex;
   }
 
-  .userLink {
-    font-size: 0.75rem;
+  .mobileMenu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    padding: 0.5rem 0;
+  }
+
+  .mobileLink {
+    color: var(--color-text);
+    text-decoration: none;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    transition: background 0.15s;
+  }
+
+  .mobileLink:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .mobileLogoutBtn {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    text-align: left;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .mobileLogoutBtn:hover {
+    color: var(--color-error);
   }
 }
