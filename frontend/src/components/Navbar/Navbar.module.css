@@ -113,15 +113,73 @@
   border-radius: 1px;
 }
 
+.mobileOverlay {
+  display: none;
+}
+
 .mobileMenu {
   display: none;
+}
+
+.mobileMenuHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.mobileMenuTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.mobileCloseBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color 0.15s;
+}
+
+.mobileCloseBtn:hover {
+  color: var(--color-text);
+}
+
+.mobileLink {
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+
+.mobileLink:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mobileLogoutBtn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  text-align: left;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.mobileLogoutBtn:hover {
+  color: var(--color-error);
 }
 
 @media (max-width: 480px) {
   .navbar {
     height: 56px;
     padding: 0 1rem;
-    flex-wrap: wrap;
   }
 
   .logoImg {
@@ -137,39 +195,38 @@
     display: flex;
   }
 
+  .mobileOverlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 150;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .mobileOverlayOpen {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .mobileMenu {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 280px;
     background: var(--color-surface);
-    border-top: 1px solid var(--color-border);
-    padding: 0.5rem 0;
+    border-left: 1px solid var(--color-border);
+    z-index: 200;
+    clip-path: inset(0 0 0 100%);
+    transition: clip-path 0.25s ease;
   }
 
-  .mobileLink {
-    color: var(--color-text);
-    text-decoration: none;
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
-    transition: background 0.15s;
-  }
-
-  .mobileLink:hover {
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .mobileLogoutBtn {
-    background: none;
-    border: none;
-    color: var(--color-text-muted);
-    text-align: left;
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: color 0.15s;
-  }
-
-  .mobileLogoutBtn:hover {
-    color: var(--color-error);
+  .mobileMenuOpen {
+    clip-path: inset(0);
   }
 }
