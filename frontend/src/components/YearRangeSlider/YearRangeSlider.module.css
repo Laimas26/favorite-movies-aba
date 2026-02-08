@@ -17,7 +17,8 @@
 .sliderWrapper {
   position: relative;
   flex: 1;
-  height: 28px;
+  height: 36px;
+  padding: 0 18px;
 }
 
 .track {
@@ -57,8 +58,8 @@
 .thumb::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border-radius: 0;
   background: transparent;
   background-image: var(--cat-thumb);
@@ -77,8 +78,8 @@
 }
 
 .thumb::-moz-range-thumb {
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border-radius: 0;
   background: transparent;
   background-image: var(--cat-thumb);
