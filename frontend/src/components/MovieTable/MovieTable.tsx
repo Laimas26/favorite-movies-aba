@@ -123,7 +123,7 @@ export default function MovieTable({
                     </div>
                   </td>
                   <td>{movie.director}</td>
-                  <td className={styles.rating}>{Number(movie.rating) % 1 === 0 ? Math.round(Number(movie.rating)) : movie.rating}/10</td>
+                  <td className={styles.rating}>&#9733; {Number(movie.rating) % 1 === 0 ? Math.round(Number(movie.rating)) : movie.rating}/10</td>
                   {currentUserId && (
                     <td>
                       {movie.userId === currentUserId && (
