@@ -145,28 +145,30 @@ export default function MovieTable({
                     </td>
                   )}
                 </tr>
-                {isExpanded && (
-                  <tr className={styles.expandedRow}>
-                    <td colSpan={colCount}>
-                      <div className={styles.expandedContent}>
-                        <div className={styles.expandedSection}>
-                          <span className={styles.expandedLabel}>Genres</span>
-                          <div className={styles.genreTags}>
-                            {movie.genres.map((g, i) => (
-                              <GenreTag key={g} genre={g} isMain={i === 0} />
-                            ))}
-                          </div>
-                        </div>
-                        {movie.notes && (
+                <tr className={`${styles.expandedRow} ${isExpanded ? styles.expandedRowOpen : ''}`}>
+                  <td colSpan={colCount}>
+                    <div className={`${styles.expandedWrapper} ${isExpanded ? styles.expandedWrapperOpen : ''}`}>
+                      <div className={styles.expandedInner}>
+                        <div className={styles.expandedContent}>
                           <div className={styles.expandedSection}>
-                            <span className={styles.expandedLabel}>Notes</span>
-                            <p className={styles.expandedNotes}>{movie.notes}</p>
+                            <span className={styles.expandedLabel}>Genres</span>
+                            <div className={styles.genreTags}>
+                              {movie.genres.map((g, i) => (
+                                <GenreTag key={g} genre={g} isMain={i === 0} />
+                              ))}
+                            </div>
                           </div>
-                        )}
+                          {movie.notes && (
+                            <div className={styles.expandedSection}>
+                              <span className={styles.expandedLabel}>Notes</span>
+                              <p className={styles.expandedNotes}>{movie.notes}</p>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </td>
-                  </tr>
-                )}
+                    </div>
+                  </td>
+                </tr>
               </React.Fragment>
             );
           })}

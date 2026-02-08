@@ -138,13 +138,32 @@
 }
 
 .expandedRow td {
-  padding: 0 1rem 0.75rem;
-  border-bottom: 1px solid var(--color-border);
+  padding: 0 1rem;
+  border-bottom: none;
   background: rgba(99, 102, 241, 0.03);
+}
+
+.expandedRowOpen td {
+  border-bottom: 1px solid var(--color-border);
 }
 
 .expandedRow:hover td {
   background: rgba(99, 102, 241, 0.03);
+}
+
+.expandedWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.expandedWrapperOpen {
+  grid-template-rows: 1fr;
+}
+
+.expandedInner {
+  overflow: hidden;
+  min-height: 0;
 }
 
 .expandedContent {
@@ -152,6 +171,7 @@
   flex-direction: column;
   gap: 0.75rem;
   padding-left: 0.75rem;
+  padding-bottom: 0.75rem;
   border-left: 2px solid var(--color-border);
   margin-left: 0.375rem;
 }
