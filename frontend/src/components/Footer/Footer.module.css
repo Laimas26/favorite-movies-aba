@@ -45,3 +45,9 @@
   font-size: 0.75rem;
   margin-top: 0.25rem;
 }
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 1rem;
+  }
+}

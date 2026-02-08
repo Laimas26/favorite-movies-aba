@@ -66,3 +66,12 @@
     transform: translateY(0);
   }
 }
+
+@media (max-width: 480px) {
+  .tooltip {
+    white-space: normal;
+    max-width: 250px;
+    right: 0;
+    left: auto;
+  }
+}

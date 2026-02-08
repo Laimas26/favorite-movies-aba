@@ -62,3 +62,13 @@
   font-size: 1rem;
   font-weight: 500;
 }
+
+@media (max-width: 480px) {
+  .page {
+    padding: 1.5rem 1rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+}

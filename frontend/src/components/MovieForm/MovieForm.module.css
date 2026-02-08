@@ -235,3 +235,23 @@
 .inputError {
   border-color: var(--color-error) !important;
 }
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 1.25rem;
+    max-width: 100%;
+    margin: 0.5rem;
+  }
+
+  .title {
+    margin-bottom: 1rem;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .cropArea {
+    height: 220px;
+  }
+}

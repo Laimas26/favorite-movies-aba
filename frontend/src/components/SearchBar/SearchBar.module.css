@@ -33,3 +33,9 @@
 .input:focus {
   border-color: var(--color-primary);
 }
+
+@media (max-width: 480px) {
+  .wrapper {
+    max-width: none;
+  }
+}

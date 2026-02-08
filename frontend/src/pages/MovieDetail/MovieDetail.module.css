@@ -172,3 +172,26 @@
     max-width: 300px;
   }
 }
+
+@media (max-width: 480px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+
+  .posterWrapper {
+    max-width: 200px;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .meta {
+    grid-template-columns: 1fr;
+  }
+}

@@ -94,3 +94,36 @@
   color: var(--color-primary);
   text-decoration: underline;
 }
+
+@media (max-width: 480px) {
+  .navbar {
+    height: 64px;
+    padding: 0 1rem;
+  }
+
+  .logoImg {
+    height: 80px;
+  }
+
+  .navLinks {
+    gap: 1rem;
+  }
+
+  .navLink {
+    font-size: 0.9rem;
+  }
+
+  .actions {
+    gap: 0.5rem;
+  }
+
+  .link,
+  .logoutBtn {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.5rem;
+  }
+
+  .userLink {
+    font-size: 0.75rem;
+  }
+}
