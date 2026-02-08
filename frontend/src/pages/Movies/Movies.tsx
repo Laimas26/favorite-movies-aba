@@ -10,6 +10,9 @@ import {
   setSearch,
   setSortBy,
   setYearRange,
+  setFilterGenres,
+  setRatingRange,
+  resetFilters,
 } from '../../store/slices/moviesSlice';
 import MovieTable from '../../components/MovieTable/MovieTable';
 import MovieForm from '../../components/MovieForm/MovieForm';
@@ -18,17 +21,25 @@ import SearchBar from '../../components/SearchBar/SearchBar';
 import Pagination from '../../components/Pagination/Pagination';
 import AddMovieButton from '../../components/AddMovieButton/AddMovieButton';
 import YearRangeSlider from '../../components/YearRangeSlider/YearRangeSlider';
+import GenreFilter from '../../components/GenreFilter/GenreFilter';
 import type { Movie } from '../../types';
 import catDirector from '../../assets/cat-director.png';
 import styles from './Movies.module.css';
 
 export default function Movies() {
   const dispatch = useAppDispatch();
-  const { movies, page, totalPages, total, search, sortBy, sortOrder, yearFrom, yearTo, loading } =
+  const { movies, page, totalPages, total, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax, loading } =
     useAppSelector((state) => state.movies);
   const { user } = useAppSelector((state) => state.auth);
 
   const [showForm, setShowForm] = useState(false);
+
+  // Local draft state for filters (only dispatched on "Apply")
+  const [localYearFrom, setLocalYearFrom] = useState(yearFrom ?? 1900);
+  const [localYearTo, setLocalYearTo] = useState(yearTo ?? 2026);
+  const [localRatingMin, setLocalRatingMin] = useState(ratingMin ?? 0);
+  const [localRatingMax, setLocalRatingMax] = useState(ratingMax ?? 10);
+  const [localGenres, setLocalGenres] = useState<string[]>(filterGenres);
 
   if (!user) {
     return (
@@ -53,9 +64,14 @@ export default function Movies() {
   const [formError, setFormError] = useState<string | null>(null);
   const [formLoading, setFormLoading] = useState(false);
 
+  const fetchParams = {
+    page, search, sortBy, sortOrder, yearFrom, yearTo, ratingMin, ratingMax,
+    ...(filterGenres.length > 0 && { genres: filterGenres.join(',') }),
+  };
+
   useEffect(() => {
-    dispatch(fetchMovies({ page, search, sortBy, sortOrder, yearFrom, yearTo }));
-  }, [dispatch, page, search, sortBy, sortOrder, yearFrom, yearTo]);
+    dispatch(fetchMovies(fetchParams));
+  }, [dispatch, page, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax]);
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -80,10 +96,44 @@ export default function Movies() {
 
   const handleYearRange = useCallback(
     (from: number, to: number) => {
-      dispatch(setYearRange({ yearFrom: from, yearTo: to }));
+      setLocalYearFrom(from);
+      setLocalYearTo(to);
     },
-    [dispatch],
+    [],
   );
+
+  const handleGenreFilter = useCallback(
+    (genres: string[]) => {
+      setLocalGenres(genres);
+    },
+    [],
+  );
+
+  const handleRatingRange = useCallback(
+    (from: number, to: number) => {
+      setLocalRatingMin(from);
+      setLocalRatingMax(to);
+    },
+    [],
+  );
+
+  const handleApplyFilters = useCallback(() => {
+    dispatch(setYearRange({ yearFrom: localYearFrom === 1900 ? undefined : localYearFrom, yearTo: localYearTo === 2026 ? undefined : localYearTo }));
+    dispatch(setFilterGenres(localGenres));
+    dispatch(setRatingRange({ ratingMin: localRatingMin === 0 ? undefined : localRatingMin, ratingMax: localRatingMax === 10 ? undefined : localRatingMax }));
+  }, [dispatch, localYearFrom, localYearTo, localGenres, localRatingMin, localRatingMax]);
+
+  const handleResetFilters = useCallback(() => {
+    setLocalYearFrom(1900);
+    setLocalYearTo(2026);
+    setLocalRatingMin(0);
+    setLocalRatingMax(10);
+    setLocalGenres([]);
+    dispatch(resetFilters());
+  }, [dispatch]);
+
+  const hasActiveFilters = yearFrom !== undefined || yearTo !== undefined || filterGenres.length > 0 || ratingMin !== undefined || ratingMax !== undefined;
+  const hasDraftChanges = localYearFrom !== (yearFrom ?? 1900) || localYearTo !== (yearTo ?? 2026) || localRatingMin !== (ratingMin ?? 0) || localRatingMax !== (ratingMax ?? 10) || JSON.stringify(localGenres) !== JSON.stringify(filterGenres);
 
   const handleAddClick = () => {
     setEditingMovie(undefined);
@@ -100,7 +150,7 @@ export default function Movies() {
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this movie?')) {
       await dispatch(deleteMovie(id));
-      dispatch(fetchMovies({ page, search, sortBy, sortOrder, yearFrom, yearTo }));
+      dispatch(fetchMovies(fetchParams));
     }
   };
 
@@ -125,7 +175,7 @@ export default function Movies() {
         }
       }
       setShowForm(false);
-      dispatch(fetchMovies({ page, search, sortBy, sortOrder, yearFrom, yearTo }));
+      dispatch(fetchMovies(fetchParams));
     } catch {
       setFormError('An unexpected error occurred');
     }
@@ -150,15 +200,47 @@ export default function Movies() {
         <AddMovieButton onClick={handleAddClick} />
       </div>
 
-      <div className={styles.filterRow}>
-        <span className={styles.filterLabel}>Year</span>
-        <YearRangeSlider
-          min={1900}
-          max={2026}
-          valueFrom={yearFrom ?? 1900}
-          valueTo={yearTo ?? 2026}
-          onChange={handleYearRange}
-        />
+      <div className={styles.filtersSection}>
+        <div className={styles.filtersHeader}>
+          <span className={styles.filtersTitle}>Filters</span>
+          <div className={styles.filterActions}>
+            {hasDraftChanges && (
+              <button className={styles.applyBtn} onClick={handleApplyFilters} type="button">
+                Apply filters
+              </button>
+            )}
+            {hasActiveFilters && (
+              <button className={styles.resetBtn} onClick={handleResetFilters} type="button">
+                Reset filters
+              </button>
+            )}
+          </div>
+        </div>
+        <div className={styles.filterRow}>
+          <span className={styles.filterLabel}>Year</span>
+          <YearRangeSlider
+            min={1900}
+            max={2026}
+            valueFrom={localYearFrom}
+            valueTo={localYearTo}
+            onChange={handleYearRange}
+          />
+        </div>
+        <div className={styles.filterRow}>
+          <span className={styles.filterLabel}>Rating</span>
+          <YearRangeSlider
+            min={0}
+            max={10}
+            step={0.5}
+            valueFrom={localRatingMin}
+            valueTo={localRatingMax}
+            onChange={handleRatingRange}
+          />
+        </div>
+        <div className={styles.filterRow}>
+          <span className={styles.filterLabel}>Genre</span>
+          <GenreFilter selected={localGenres} onChange={handleGenreFilter} />
+        </div>
       </div>
 
       {loading ? (

@@ -40,4 +40,7 @@ export interface QueryParams {
   sortOrder?: 'ASC' | 'DESC';
   yearFrom?: number;
   yearTo?: number;
+  genres?: string;
+  ratingMin?: number;
+  ratingMax?: number;
 }

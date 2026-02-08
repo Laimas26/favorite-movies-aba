@@ -14,6 +14,9 @@ interface MoviesState {
   sortOrder: 'ASC' | 'DESC';
   yearFrom: number | undefined;
   yearTo: number | undefined;
+  filterGenres: string[];
+  ratingMin: number | undefined;
+  ratingMax: number | undefined;
   loading: boolean;
   error: string | null;
   currentMovie: Movie | null;
@@ -32,6 +35,9 @@ const initialState: MoviesState = {
   sortOrder: 'DESC',
   yearFrom: undefined,
   yearTo: undefined,
+  filterGenres: [],
+  ratingMin: undefined,
+  ratingMax: undefined,
   loading: false,
   error: null,
   currentMovie: null,
@@ -160,6 +166,23 @@ const moviesSlice = createSlice({
       state.yearTo = action.payload.yearTo;
       state.page = 1;
     },
+    setFilterGenres(state, action: PayloadAction<string[]>) {
+      state.filterGenres = action.payload;
+      state.page = 1;
+    },
+    setRatingRange(state, action: PayloadAction<{ ratingMin?: number; ratingMax?: number }>) {
+      state.ratingMin = action.payload.ratingMin;
+      state.ratingMax = action.payload.ratingMax;
+      state.page = 1;
+    },
+    resetFilters(state) {
+      state.yearFrom = undefined;
+      state.yearTo = undefined;
+      state.filterGenres = [];
+      state.ratingMin = undefined;
+      state.ratingMax = undefined;
+      state.page = 1;
+    },
     clearCurrentMovie(state) {
       state.currentMovie = null;
       state.currentMovieError = null;
@@ -212,5 +235,5 @@ const moviesSlice = createSlice({
   },
 });
 
-export const { setPage, setSearch, setSortBy, setYearRange, clearCurrentMovie } = moviesSlice.actions;
+export const { setPage, setSearch, setSortBy, setYearRange, setFilterGenres, setRatingRange, resetFilters, clearCurrentMovie } = moviesSlice.actions;
 export default moviesSlice.reducer;

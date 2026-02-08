@@ -7,10 +7,11 @@ interface Props {
   max: number;
   valueFrom: number;
   valueTo: number;
+  step?: number;
   onChange: (from: number, to: number) => void;
 }
 
-export default function YearRangeSlider({ min, max, valueFrom, valueTo, onChange }: Props) {
+export default function YearRangeSlider({ min, max, valueFrom, valueTo, step = 1, onChange }: Props) {
   const handleFromChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = Number(e.target.value);
@@ -45,6 +46,7 @@ export default function YearRangeSlider({ min, max, valueFrom, valueTo, onChange
           className={styles.thumb}
           min={min}
           max={max}
+          step={step}
           value={valueFrom}
           onChange={handleFromChange}
         />
@@ -53,6 +55,7 @@ export default function YearRangeSlider({ min, max, valueFrom, valueTo, onChange
           className={styles.thumb}
           min={min}
           max={max}
+          step={step}
           value={valueTo}
           onChange={handleToChange}
         />

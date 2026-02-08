@@ -44,7 +44,7 @@ export class MoviesService implements OnModuleInit {
   }
 
   async findAll(query: QueryMoviesDto) {
-    const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC', yearFrom, yearTo } = query;
+    const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC', yearFrom, yearTo, genres, ratingMin, ratingMax } = query;
 
     const qb = this.moviesRepository
       .createQueryBuilder('movie')
@@ -62,6 +62,20 @@ export class MoviesService implements OnModuleInit {
     }
     if (yearTo) {
       qb.andWhere('movie.year <= :yearTo', { yearTo });
+    }
+
+    if (genres) {
+      const genreList = genres.split(',').map((g) => g.trim()).filter(Boolean);
+      if (genreList.length > 0) {
+        qb.andWhere(`movie.genres ::jsonb ?| array[:...genreList]`, { genreList });
+      }
+    }
+
+    if (ratingMin !== undefined) {
+      qb.andWhere('movie.rating >= :ratingMin', { ratingMin });
+    }
+    if (ratingMax !== undefined) {
+      qb.andWhere('movie.rating <= :ratingMax', { ratingMax });
     }
 
     if (sortBy === 'genres') {

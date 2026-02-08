@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsInt, IsIn, Min, Max } from 'class-validator';
+import { IsOptional, IsString, IsInt, IsIn, IsNumber, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class QueryMoviesDto {
@@ -36,4 +36,22 @@ export class QueryMoviesDto {
   @Type(() => Number)
   @IsInt()
   yearTo?: number;
+
+  @IsOptional()
+  @IsString()
+  genres?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  @Max(10)
+  ratingMin?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  @Max(10)
+  ratingMax?: number;
 }
