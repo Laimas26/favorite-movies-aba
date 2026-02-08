@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import catSlider from '../../assets/cat-slider.png';
 import styles from './YearRangeSlider.module.css';
 
 interface Props {
@@ -35,7 +34,7 @@ export default function YearRangeSlider({ min, max, valueFrom, valueTo, step = 1
   return (
     <div className={styles.container}>
       <span className={styles.label}>{valueFrom}</span>
-      <div className={styles.sliderWrapper} style={{ '--cat-thumb': `url(${catSlider})` } as React.CSSProperties}>
+      <div className={styles.sliderWrapper}>
         <div className={styles.track} />
         <div
           className={styles.trackFill}
