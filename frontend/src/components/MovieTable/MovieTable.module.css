@@ -65,9 +65,12 @@
 }
 
 .rating {
-  color: var(--color-warning);
   font-weight: 600;
   white-space: nowrap;
+}
+
+.ratingStar {
+  color: var(--color-warning);
 }
 
 .actions {
