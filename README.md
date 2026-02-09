@@ -1,71 +1,109 @@
 # Favorite Movies List
 
-A full-stack application for managing a personal favorite movies collection. Built with **NestJS**, **React**, **TypeScript**, **PostgreSQL**, and **Redux Toolkit**.
+A full-stack web application for managing a personal favorite movies collection. Built as a test task for **ababa.tech** internship.
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
 | **Frontend** | React 19, TypeScript, Redux Toolkit, CSS Modules, Vite |
-| **Backend** | NestJS, TypeScript, TypeORM, PostgreSQL |
-| **Auth** | JWT (JSON Web Tokens), bcrypt |
-| **Validation** | class-validator, class-transformer |
+| **Backend** | NestJS, TypeScript, TypeORM, Passport.js |
+| **Database** | PostgreSQL (JSONB, UUID primary keys) |
+| **Auth** | JWT + Google OAuth 2.0, bcrypt password hashing |
 
 ## Prerequisites
 
 - **Node.js** >= 20
-- **PostgreSQL** >= 14
+- **PostgreSQL** >= 14 (running on `localhost:5432`)
 - **npm** >= 9
 
-## Getting Started
+Make sure PostgreSQL is **running** before proceeding:
 
-### 1. Clone the repository
+**Windows** — open *Services* (`services.msc`) and check that **postgresql-x64-17** (or your version) is running.
+
+**Linux/macOS:**
+```bash
+sudo systemctl status postgresql    # Check status
+sudo systemctl start postgresql     # Start if not running
+```
+
+## Quick Start
+
+### 1. Clone & install
 
 ```bash
 git clone <repository-url>
 cd favorite-movies
+npm run install:all
 ```
 
-### 2. Database Setup
+This installs dependencies for the root, backend, and frontend.
 
-Create the PostgreSQL database:
+### 2. Configure environment
+
+Copy the example files — all defaults work out of the box (including Google OAuth):
 
 ```bash
-psql -U postgres -c "CREATE DATABASE favorite_movies;"
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 ```
 
-Or via **pgAdmin**: right-click Databases > Create > Database > name it `favorite_movies`.
+> On Windows CMD, use `copy` instead of `cp` (or just use Git Bash).
 
-### 3. Backend
+Only edit `backend/.env` if your PostgreSQL credentials differ from `postgres`/`postgres`.
+
+### 3. Create the database
 
 ```bash
-cd backend
-cp .env.example .env    # Edit .env with your DB credentials
-npm install
-npm run start:dev       # Starts on http://localhost:3000
+npm run db:create
 ```
 
-### 4. Frontend
+This automatically creates the `favorite_movies` PostgreSQL database. If it already exists, it skips gracefully. Database **tables are created automatically** by TypeORM when the backend starts — no migrations needed.
+
+### 4. Start the app (first run)
 
 ```bash
-cd frontend
-npm install
-npm run dev             # Starts on http://localhost:5173
+npm run dev
 ```
 
-Open **http://localhost:5173** in your browser.
+This starts both servers concurrently:
+- **Backend** → http://localhost:3001
+- **Frontend** → http://localhost:5173
+
+On the first run, wait a few seconds for TypeORM to create the database tables, then seed the sample data:
+
+```bash
+npm run db:seed
+```
+
+This populates the database with 12 movies (with poster images) and a test account.
+
+### 5. Open in browser
+
+Go to http://localhost:5173 and log in with the test account:
+
+| Email | Password |
+|-------|----------|
+| `test@test.com` | `test123` |
+
+> **One-liner setup (after first run):** `npm run setup && npm run dev` — installs deps, creates DB, and seeds sample data. Note: the backend must have run at least once to create the tables before seeding works.
 
 ## Features
 
-- **Authentication** - Register and login with JWT-based auth
-- **Movies CRUD** - Add, edit, and delete your favorite movies
-- **Pagination** - Paginated movie list (10 per page)
-- **Search** - Search movies by title (debounced)
-- **Sorting** - Click column headers to sort by title, year, genre, director, or rating
-- **Authorization** - Only movie owners can edit/delete their movies
-- **Validation** - Full input validation on both frontend and backend
-- **Guards** - JWT auth guards protecting write operations
-- **Fun UX** - Try clicking "Add Movie" without logging in ;)
+- **JWT Authentication** — register and login with email/password
+- **Google OAuth** — one-click login with Google account
+- **Movies CRUD** — add, edit, and delete movies with image upload
+- **Image Cropper** — built-in 2:3 poster cropping (pan, zoom, crop on submit)
+- **Multi-Genre Support** — movies can have multiple genres (JSONB), main genre highlighted in gold
+- **Search** — debounced (300ms) case-insensitive search by title
+- **Sorting** — click column headers to sort by title, year, genre, director, rating, or date added
+- **Filters** — year range slider, rating range slider (0-10, step 0.5), genre pills — with deferred "Apply" to prevent flicker
+- **Pagination** — configurable page size (10 / 25 / 50), page navigation
+- **Collapsible Rows** — click any row to expand and see all genre tags + notes
+- **Authorization** — only movie owners can edit/delete their movies
+- **Auto-Logout** — expired JWT tokens are detected and cleared automatically
+- **Mobile Responsive** — hamburger menu with slide drawer, adapted layouts at 480px breakpoint
+- **Dark Theme** — neutral grey palette with green accents, CSS custom properties throughout
 
 ## API Endpoints
 
@@ -75,40 +113,57 @@ Open **http://localhost:5173** in your browser.
 |--------|------|------|-------------|
 | `POST` | `/auth/register` | No | Register a new user |
 | `POST` | `/auth/login` | No | Login and receive JWT |
+| `POST` | `/auth/google` | No | Login/register via Google OAuth token |
 | `GET` | `/auth/profile` | Yes | Get current user profile |
 
 ### Movies
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| `GET` | `/movies` | No | List movies (paginated) |
-| `GET` | `/movies/:id` | No | Get single movie |
-| `POST` | `/movies` | Yes | Create a movie |
+| `GET` | `/movies` | Yes | List movies (paginated, filtered, sorted) |
+| `GET` | `/movies/:id` | Yes | Get a single movie |
+| `POST` | `/movies` | Yes | Create a movie (multipart form with optional image) |
 | `PATCH` | `/movies/:id` | Yes | Update a movie (owner only) |
 | `DELETE` | `/movies/:id` | Yes | Delete a movie (owner only) |
 
 **Query parameters for `GET /movies`:**
-- `page` - Page number (default: 1)
-- `limit` - Items per page (default: 10)
-- `search` - Search by title
-- `sortBy` - Sort column: `title`, `year`, `genre`, `director`, `rating`, `createdAt`
-- `sortOrder` - `ASC` or `DESC`
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `page` | `1` | Page number |
+| `limit` | `10` | Items per page |
+| `search` | — | Case-insensitive title search |
+| `sortBy` | `rating` | Column: `title`, `year`, `genres`, `director`, `rating`, `createdAt` |
+| `sortOrder` | `DESC` | `ASC` or `DESC` |
+| `yearFrom` | — | Minimum year filter |
+| `yearTo` | — | Maximum year filter |
+| `ratingMin` | — | Minimum rating (0-10) |
+| `ratingMax` | — | Maximum rating (0-10) |
+| `genres` | — | Comma-separated genre filter (e.g. `Action,Drama`) |
 
 ## Project Structure
 
 ```
-├── backend/              # NestJS API
-│   └── src/
-│       ├── auth/         # Authentication (JWT, guards, strategies)
-│       ├── users/        # User entity and service
-│       └── movies/       # Movies CRUD with pagination/search/sort
-├── frontend/             # React SPA
-│   └── src/
-│       ├── components/   # Reusable UI components
-│       ├── pages/        # Page components (Movies, Login, Register)
-│       ├── store/        # Redux Toolkit (slices, store config)
-│       ├── api/          # Axios instance with JWT interceptor
-│       └── types/        # TypeScript interfaces
+favorite-movies/
+├── backend/                  # NestJS API
+│   ├── scripts/
+│   │   └── create-db.js      # Database auto-creation script
+│   ├── src/
+│   │   ├── auth/             # JWT strategy, guards, Google OAuth
+│   │   ├── users/            # User entity and service
+│   │   └── movies/           # Movies CRUD, pagination, search, sort, filters
+│   ├── uploads/              # Uploaded movie poster images
+│   └── .env.example
+├── frontend/                 # React SPA (Vite)
+│   ├── public/               # Static assets (hero video, images)
+│   ├── src/
+│   │   ├── components/       # MovieTable, MovieForm, Navbar, GenreTag, etc.
+│   │   ├── pages/            # Movies, Login, Register, Profile, MovieDetail
+│   │   ├── store/            # Redux Toolkit (authSlice, moviesSlice)
+│   │   ├── api/              # Axios instance with JWT interceptor
+│   │   └── types/            # TypeScript interfaces
+│   └── .env.example
+├── package.json              # Root: npm run dev, install:all, setup, db:create
 └── README.md
 ```
 
@@ -116,11 +171,20 @@ Open **http://localhost:5173** in your browser.
 
 ### Backend (`backend/.env`)
 
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=your_password
-DB_NAME=favorite_movies
-JWT_SECRET=your_secret_key
-```
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DB_HOST` | PostgreSQL host | `localhost` |
+| `DB_PORT` | PostgreSQL port | `5432` |
+| `DB_USERNAME` | PostgreSQL user | `postgres` |
+| `DB_PASSWORD` | PostgreSQL password | `postgres` |
+| `DB_NAME` | Database name | `favorite_movies` |
+| `JWT_SECRET` | Secret key for signing JWT tokens | — |
+| `PORT` | Backend server port | `3001` |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID (optional) | — |
+
+### Frontend (`frontend/.env`)
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `VITE_API_URL` | Backend API base URL | `http://localhost:3001` |
+| `VITE_GOOGLE_CLIENT_ID` | Google OAuth client ID (optional) | — |
