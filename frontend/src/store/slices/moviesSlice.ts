@@ -31,7 +31,7 @@ const initialState: MoviesState = {
   limit: 10,
   totalPages: 0,
   search: '',
-  sortBy: 'createdAt',
+  sortBy: 'rating',
   sortOrder: 'DESC',
   yearFrom: undefined,
   yearTo: undefined,
