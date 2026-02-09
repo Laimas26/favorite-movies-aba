@@ -239,8 +239,8 @@
 
 .newSection {
   margin-top: 3rem;
-  padding: 3rem 2rem;
-  background: rgba(210, 160, 90, 0.12);
+  padding: 4rem 2rem;
+  background: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 60%), #1a1a1a;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
 }
@@ -252,7 +252,7 @@
   padding: 2.5rem;
   max-width: 680px;
   margin: 0 auto;
-  box-shadow: 0 0 24px rgba(210, 160, 90, 0.3);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.25);
 }
 
 .aboutTitle {
