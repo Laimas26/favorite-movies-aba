@@ -7,6 +7,7 @@ import {
   updateMovie,
   deleteMovie,
   setPage,
+  setLimit,
   setSearch,
   setSortBy,
   setYearRange,
@@ -28,7 +29,7 @@ import styles from './Movies.module.css';
 
 export default function Movies() {
   const dispatch = useAppDispatch();
-  const { movies, page, totalPages, total, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax, loading } =
+  const { movies, page, limit, totalPages, total, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax, loading } =
     useAppSelector((state) => state.movies);
   const { user } = useAppSelector((state) => state.auth);
 
@@ -65,13 +66,13 @@ export default function Movies() {
   const [formLoading, setFormLoading] = useState(false);
 
   const fetchParams = {
-    page, search, sortBy, sortOrder, yearFrom, yearTo, ratingMin, ratingMax,
+    page, limit, search, sortBy, sortOrder, yearFrom, yearTo, ratingMin, ratingMax,
     ...(filterGenres.length > 0 && { genres: filterGenres.join(',') }),
   };
 
   useEffect(() => {
     dispatch(fetchMovies(fetchParams));
-  }, [dispatch, page, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax]);
+  }, [dispatch, page, limit, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax]);
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -90,6 +91,13 @@ export default function Movies() {
   const handlePageChange = useCallback(
     (newPage: number) => {
       dispatch(setPage(newPage));
+    },
+    [dispatch],
+  );
+
+  const handleLimitChange = useCallback(
+    (newLimit: number) => {
+      dispatch(setLimit(newLimit));
     },
     [dispatch],
   );
@@ -250,6 +258,22 @@ export default function Movies() {
         </div>
       ) : (
         <>
+          {total > 0 && (
+            <div className={styles.tableHeader}>
+              <span className={styles.totalInfo}>
+                Showing {(page - 1) * limit + 1}-{Math.min(page * limit, total)} out of {total}
+              </span>
+              <select
+                className={styles.perPage}
+                value={limit}
+                onChange={(e) => handleLimitChange(Number(e.target.value))}
+              >
+                <option value={10}>10 per page</option>
+                <option value={25}>25 per page</option>
+                <option value={50}>50 per page</option>
+              </select>
+            </div>
+          )}
           <MovieTable
             movies={movies}
             sortBy={sortBy}
@@ -265,11 +289,6 @@ export default function Movies() {
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
-          {total > 0 && (
-            <p className={styles.totalInfo}>
-              {total} movie{total !== 1 ? 's' : ''} total
-            </p>
-          )}
         </>
       )}
 

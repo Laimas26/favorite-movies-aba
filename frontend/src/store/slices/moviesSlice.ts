@@ -148,6 +148,10 @@ const moviesSlice = createSlice({
     setPage(state, action: PayloadAction<number>) {
       state.page = action.payload;
     },
+    setLimit(state, action: PayloadAction<number>) {
+      state.limit = action.payload;
+      state.page = 1;
+    },
     setSearch(state, action: PayloadAction<string>) {
       state.search = action.payload;
       state.page = 1;
@@ -235,5 +239,5 @@ const moviesSlice = createSlice({
   },
 });
 
-export const { setPage, setSearch, setSortBy, setYearRange, setFilterGenres, setRatingRange, resetFilters, clearCurrentMovie } = moviesSlice.actions;
+export const { setPage, setLimit, setSearch, setSortBy, setYearRange, setFilterGenres, setRatingRange, resetFilters, clearCurrentMovie } = moviesSlice.actions;
 export default moviesSlice.reducer;

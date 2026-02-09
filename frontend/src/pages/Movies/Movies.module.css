@@ -190,11 +190,27 @@
   }
 }
 
+.tableHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
 .totalInfo {
   font-size: 0.8125rem;
   color: var(--color-text-muted);
-  text-align: center;
-  padding-top: 0.5rem;
+}
+
+.perPage {
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
 }
 
 @media (max-width: 480px) {
