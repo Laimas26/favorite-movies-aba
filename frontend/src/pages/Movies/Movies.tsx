@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   fetchMovies,
+  fetchCatMovies,
   addMovie,
   updateMovie,
   deleteMovie,
@@ -27,9 +28,11 @@ import type { Movie } from '../../types';
 import catDirector from '../../assets/cat-director.png';
 import styles from './Movies.module.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 export default function Movies() {
   const dispatch = useAppDispatch();
-  const { movies, page, limit, totalPages, total, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax, loading } =
+  const { movies, page, limit, totalPages, total, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax, loading, catMovies, catMoviesLoading } =
     useAppSelector((state) => state.movies);
   const { user } = useAppSelector((state) => state.auth);
 
@@ -73,6 +76,10 @@ export default function Movies() {
   useEffect(() => {
     dispatch(fetchMovies(fetchParams));
   }, [dispatch, page, limit, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax]);
+
+  useEffect(() => {
+    dispatch(fetchCatMovies());
+  }, [dispatch]);
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -159,6 +166,7 @@ export default function Movies() {
     if (window.confirm('Are you sure you want to delete this movie?')) {
       await dispatch(deleteMovie(id));
       dispatch(fetchMovies(fetchParams));
+      dispatch(fetchCatMovies());
     }
   };
 
@@ -184,6 +192,7 @@ export default function Movies() {
       }
       setShowForm(false);
       dispatch(fetchMovies(fetchParams));
+      dispatch(fetchCatMovies());
     } catch {
       setFormError('An unexpected error occurred');
     }
@@ -291,6 +300,44 @@ export default function Movies() {
           />
         </>
       )}
+
+      <div className={styles.catSection}>
+        <h2 className={styles.catSectionTitle}>Cat Movies 🐱</h2>
+        <p className={styles.catSectionSubtitle}>Movies featuring our feline friends</p>
+        {catMoviesLoading ? (
+          <div className={styles.loading}>
+            <div className={styles.spinner} />
+            <p>Loading cat movies...</p>
+          </div>
+        ) : catMovies.length > 0 ? (
+          <div className={styles.catGrid}>
+            {catMovies.map((movie) => (
+              <div key={movie.id} className={styles.catCard}>
+                <div className={styles.catCardPoster}>
+                  {movie.image ? (
+                    <img
+                      src={`${API_URL}/uploads/${movie.image}`}
+                      alt={movie.title}
+                      className={styles.catCardImage}
+                    />
+                  ) : (
+                    <div className={styles.catCardPlaceholder}>🐱</div>
+                  )}
+                  <div className={styles.catCardOverlay}>
+                    <span className={styles.catCardRating}>★ {movie.rating}</span>
+                  </div>
+                </div>
+                <div className={styles.catCardInfo}>
+                  <span className={styles.catCardTitle}>{movie.title}</span>
+                  <span className={styles.catCardYear}>{movie.year}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.catEmpty}>No cat movies yet. Add some movies with cats!</p>
+        )}
+      </div>
 
       {showForm && (
         <MovieForm

@@ -19,6 +19,8 @@ interface MoviesState {
   ratingMax: number | undefined;
   loading: boolean;
   error: string | null;
+  catMovies: Movie[];
+  catMoviesLoading: boolean;
   currentMovie: Movie | null;
   currentMovieLoading: boolean;
   currentMovieError: string | null;
@@ -40,6 +42,8 @@ const initialState: MoviesState = {
   ratingMax: undefined,
   loading: false,
   error: null,
+  catMovies: [],
+  catMoviesLoading: false,
   currentMovie: null,
   currentMovieLoading: false,
   currentMovieError: null,
@@ -53,6 +57,14 @@ export const fetchMovies = createAsyncThunk(
   },
 );
 
+export const fetchCatMovies = createAsyncThunk(
+  'movies/fetchCatMovies',
+  async () => {
+    const response = await api.get('/movies', { params: { haveCats: true, limit: 50 } });
+    return (response.data as PaginatedResponse<Movie>).data;
+  },
+);
+
 interface AddMoviePayload {
   title: string;
   year: number;
@@ -60,6 +72,7 @@ interface AddMoviePayload {
   director: string;
   rating: number;
   notes?: string;
+  haveCats?: boolean;
   imageFile?: File;
 }
 
@@ -74,6 +87,7 @@ export const addMovie = createAsyncThunk(
       formData.append('director', data.director);
       formData.append('rating', String(data.rating));
       if (data.notes) formData.append('notes', data.notes);
+      if (data.haveCats !== undefined) formData.append('haveCats', String(data.haveCats));
       if (data.imageFile) formData.append('image', data.imageFile);
       const response = await api.post('/movies', formData);
       return response.data as Movie;
@@ -92,6 +106,7 @@ interface UpdateMoviePayload {
   director?: string;
   rating?: number;
   notes?: string;
+  haveCats?: boolean;
   imageFile?: File;
 }
 
@@ -235,6 +250,16 @@ const moviesSlice = createSlice({
       .addCase(fetchMovieById.rejected, (state, action) => {
         state.currentMovieLoading = false;
         state.currentMovieError = action.payload as string;
+      })
+      .addCase(fetchCatMovies.pending, (state) => {
+        state.catMoviesLoading = true;
+      })
+      .addCase(fetchCatMovies.fulfilled, (state, action) => {
+        state.catMoviesLoading = false;
+        state.catMovies = action.payload;
+      })
+      .addCase(fetchCatMovies.rejected, (state) => {
+        state.catMoviesLoading = false;
       });
   },
 });

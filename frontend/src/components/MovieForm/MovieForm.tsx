@@ -21,6 +21,7 @@ export interface MovieFormData {
   director: string;
   rating: number;
   notes?: string;
+  haveCats?: boolean;
   imageFile?: File;
 }
 
@@ -45,6 +46,7 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
   const [director, setDirector] = useState(movie?.director ?? '');
   const [rating, setRating] = useState(movie?.rating ?? 7);
   const [notes, setNotes] = useState(movie?.notes ?? '');
+  const [haveCats, setHaveCats] = useState(movie?.haveCats ?? false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -116,6 +118,7 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
       director,
       rating,
       notes: notes || undefined,
+      haveCats,
       imageFile,
     });
   };
@@ -256,6 +259,20 @@ export default function MovieForm({ movie, onSubmit, onClose, loading, error }: 
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Your thoughts about this movie..."
             />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.toggleRow}>
+              <span className={styles.label} style={{ marginBottom: 0 }}>Has cats?</span>
+              <button
+                type="button"
+                className={`${styles.toggle} ${haveCats ? styles.toggleOn : ''}`}
+                onClick={() => setHaveCats(!haveCats)}
+                role="switch"
+                aria-checked={haveCats}
+              >
+                <span className={styles.toggleThumb} />
+              </button>
+            </label>
           </div>
           {error && <p className={styles.error}>{error}</p>}
           <div className={styles.actions}>
