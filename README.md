@@ -158,11 +158,12 @@ This populates the database with 12 movies (with poster images) and a test accou
 
 ### 5. Open in browser
 
-Go to http://localhost:5173 and log in with the test account:
+Go to http://localhost:5173 and log in with one of the test accounts:
 
-| Email | Password |
-|-------|----------|
-| `test@test.com` | `test123` |
+| Role | Email | Password | Permissions |
+|------|-------|----------|-------------|
+| **Owner** | `owner@owner.com` | `owner123` | Add, edit, delete movies |
+| **Viewer** | `test@test.com` | `test123` | View only |
 
 > **One-liner setup (after first run):** `npm run setup && npm run dev` — installs deps, creates DB, and seeds sample data. Note: the backend must have run at least once to create the tables before seeding works.
 

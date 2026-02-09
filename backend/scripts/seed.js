@@ -4,9 +4,12 @@ const { Client } = require('pg');
 
 const OWNER_ID = '0691934f-a8a8-44ff-9968-0bd4c8118bb2';
 const TEST_USER_ID = '1bbf68b4-1dd2-4b04-a8d6-ef3acd8f9caa';
+const REVIEWER_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890';
 
 // bcrypt hash of "test123"
 const TEST_PASSWORD_HASH = '$2b$10$tnqSgmbwCKTZcKCWeBDu8Od03H29IzYMCbPbF5RmXIOzq/vXrrgc2';
+// bcrypt hash of "owner123"
+const REVIEWER_PASSWORD_HASH = '$2b$10$au8F/IZPZ.KNOKgRekuJDeTuhj57HVFQ5NYbgiDpw9JwgJAXEnHYW';
 
 const users = [
   {
@@ -15,6 +18,13 @@ const users = [
     password: null,
     name: 'Laimonas Rupeika',
     googleId: '115976348580568684153',
+  },
+  {
+    id: REVIEWER_ID,
+    email: 'owner@owner.com',
+    password: REVIEWER_PASSWORD_HASH,
+    name: 'Owner',
+    googleId: null,
   },
   {
     id: TEST_USER_ID,
@@ -181,7 +191,9 @@ async function seed() {
     if (usersInserted === 0 && moviesInserted === 0) {
       console.log('(All data already existed - nothing new inserted.)');
     }
-    console.log('\nTest account: test@test.com / test123');
+    console.log('\nAccounts:');
+    console.log('  Owner:  owner@owner.com / owner123  (can add/edit/delete)');
+    console.log('  Viewer: test@test.com   / test123   (view only)');
   } catch (err) {
     if (err.message.includes('relation "users" does not exist')) {
       console.error('Tables do not exist yet. Start the backend first (`npm run dev`) to auto-create tables, then run seed again.');

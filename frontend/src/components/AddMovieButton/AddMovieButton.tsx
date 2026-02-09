@@ -28,7 +28,8 @@ export default function AddMovieButton({ onClick }: Props) {
     setShowTooltip(true);
   };
 
-  const isAllowed = user?.email === 'laimonas.rupeika@gmail.com';
+  const OWNER_EMAILS = ['laimonas.rupeika@gmail.com', 'owner@owner.com'];
+  const isAllowed = OWNER_EMAILS.includes(user?.email ?? '');
 
   if (isAllowed) {
     return (
