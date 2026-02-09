@@ -171,6 +171,7 @@ Go to http://localhost:5173 and log in with one of the test accounts:
 
 - **JWT Authentication** — register and login with email/password
 - **Google OAuth** — one-click login with Google account
+- **Password Reset** — forgot password on login page, change password on profile; reset link logged to backend console (Ethereal fake SMTP)
 - **Movies CRUD** — add, edit, and delete movies with image upload
 - **Image Cropper** — built-in 2:3 poster cropping (pan, zoom, crop on submit)
 - **Multi-Genre Support** — movies can have multiple genres (JSONB), main genre highlighted in gold
@@ -194,6 +195,8 @@ Go to http://localhost:5173 and log in with one of the test accounts:
 | `POST` | `/auth/login` | No | Login and receive JWT |
 | `POST` | `/auth/google` | No | Login/register via Google OAuth token |
 | `GET` | `/auth/profile` | Yes | Get current user profile |
+| `POST` | `/auth/forgot-password` | No | Send password reset email (link in backend console) |
+| `POST` | `/auth/reset-password` | No | Reset password using token from email link |
 
 ### Movies
 
@@ -228,7 +231,7 @@ favorite-movies/
 │   ├── scripts/
 │   │   └── create-db.js      # Database auto-creation script
 │   ├── src/
-│   │   ├── auth/             # JWT strategy, guards, Google OAuth
+│   │   ├── auth/             # JWT strategy, guards, Google OAuth, password reset, email service
 │   │   ├── users/            # User entity and service
 │   │   └── movies/           # Movies CRUD, pagination, search, sort, filters
 │   ├── uploads/              # Uploaded movie poster images
@@ -260,6 +263,7 @@ favorite-movies/
 | `JWT_SECRET` | Secret key for signing JWT tokens | — |
 | `PORT` | Backend server port | `3001` |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID (optional) | — |
+| `FRONTEND_URL` | Frontend URL for password reset links | `http://localhost:5173` |
 
 ### Frontend (`frontend/.env`)
 
