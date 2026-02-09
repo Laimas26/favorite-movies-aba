@@ -47,33 +47,14 @@ export default function Movies() {
   const [aboutVisible, setAboutVisible] = useState(false);
   const aboutCardRef = useRef<HTMLDivElement>(null);
 
-  if (!user) {
-    return (
-      <div className={styles.authPage}>
-        <div className={styles.authGate}>
-          <h2>Hold on!</h2>
-          <p>You need to log in to see my fabulous movie list.</p>
-          <Link to="/login" className={styles.authGateBtn}>
-            Log in
-          </Link>
-          <img
-            src={catDirector}
-            alt="Cat director pointing at login"
-            className={styles.catImage}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  const fetchParams = {
-    page, limit, search, sortBy, sortOrder, yearFrom, yearTo, ratingMin, ratingMax,
-    ...(filterGenres.length > 0 && { genres: filterGenres.join(',') }),
-  };
-
   useEffect(() => {
+    if (!user) return;
+    const fetchParams = {
+      page, limit, search, sortBy, sortOrder, yearFrom, yearTo, ratingMin, ratingMax,
+      ...(filterGenres.length > 0 && { genres: filterGenres.join(',') }),
+    };
     dispatch(fetchMovies(fetchParams));
-  }, [dispatch, page, limit, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax]);
+  }, [dispatch, user, page, limit, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax]);
 
   useEffect(() => {
     const el = aboutCardRef.current;
@@ -170,7 +151,10 @@ export default function Movies() {
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this movie?')) {
       await dispatch(deleteMovie(id));
-      dispatch(fetchMovies(fetchParams));
+      dispatch(fetchMovies({
+        page, limit, search, sortBy, sortOrder, yearFrom, yearTo, ratingMin, ratingMax,
+        ...(filterGenres.length > 0 && { genres: filterGenres.join(',') }),
+      }));
     }
   };
 
@@ -195,12 +179,34 @@ export default function Movies() {
         }
       }
       setShowForm(false);
-      dispatch(fetchMovies(fetchParams));
+      dispatch(fetchMovies({
+        page, limit, search, sortBy, sortOrder, yearFrom, yearTo, ratingMin, ratingMax,
+        ...(filterGenres.length > 0 && { genres: filterGenres.join(',') }),
+      }));
     } catch {
       setFormError('An unexpected error occurred');
     }
     setFormLoading(false);
   };
+
+  if (!user) {
+    return (
+      <div className={styles.authPage}>
+        <div className={styles.authGate}>
+          <h2>Hold on!</h2>
+          <p>You need to log in to see my fabulous movie list.</p>
+          <Link to="/login" className={styles.authGateBtn}>
+            Log in
+          </Link>
+          <img
+            src={catDirector}
+            alt="Cat director pointing at login"
+            className={styles.catImage}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
