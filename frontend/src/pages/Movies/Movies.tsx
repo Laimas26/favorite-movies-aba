@@ -258,6 +258,7 @@ export default function Movies() {
             onEdit={handleEdit}
             onDelete={handleDelete}
             currentUserId={user?.id ?? null}
+            showActions={user?.email === 'laimonas.rupeika@gmail.com'}
           />
           <Pagination
             page={page}

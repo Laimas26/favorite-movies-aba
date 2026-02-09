@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Movie } from '../../types';
 import GenreTag from '../GenreTag/GenreTag';
+import catStretch from '../../assets/cat-stretch.png';
 import styles from './MovieTable.module.css';
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
   onEdit: (movie: Movie) => void;
   onDelete: (id: string) => void;
   currentUserId: string | null;
+  showActions: boolean;
 }
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -32,6 +34,7 @@ export default function MovieTable({
   onEdit,
   onDelete,
   currentUserId,
+  showActions,
 }: Props) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
 
@@ -75,13 +78,13 @@ export default function MovieTable({
                 )}
               </th>
             ))}
-            {currentUserId && <th>Actions</th>}
+            {showActions && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
           {movies.map((movie) => {
             const isExpanded = expandedRows.has(movie.id);
-            const colCount = COLUMNS.length + (currentUserId ? 1 : 0);
+            const colCount = COLUMNS.length + (showActions ? 1 : 0);
 
             return (
               <React.Fragment key={movie.id}>
@@ -124,7 +127,7 @@ export default function MovieTable({
                   </td>
                   <td>{movie.director}</td>
                   <td className={styles.rating}>&#9733; {Number(movie.rating) % 1 === 0 ? Math.round(Number(movie.rating)) : movie.rating}/10</td>
-                  {currentUserId && (
+                  {showActions && (
                     <td>
                       {movie.userId === currentUserId && (
                         <div className={styles.actions}>
@@ -147,6 +150,11 @@ export default function MovieTable({
                 </tr>
                 <tr className={`${styles.expandedRow} ${isExpanded ? styles.expandedRowOpen : ''}`}>
                   <td colSpan={colCount}>
+                    <img
+                      src={catStretch}
+                      alt=""
+                      className={`${styles.stretchCat} ${isExpanded ? styles.stretchCatOpen : ''}`}
+                    />
                     <div className={`${styles.expandedWrapper} ${isExpanded ? styles.expandedWrapperOpen : ''}`}>
                       <div className={styles.expandedInner}>
                         <div className={styles.expandedContent}>
