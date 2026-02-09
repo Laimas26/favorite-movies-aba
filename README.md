@@ -13,19 +13,97 @@ A full-stack web application for managing a personal favorite movies collection.
 
 ## Prerequisites
 
-- **Node.js** >= 20
-- **PostgreSQL** >= 14 (running on `localhost:5432`)
-- **npm** >= 9
+You need **Node.js** (>= 20) and **PostgreSQL** (>= 14). Follow the instructions for your operating system below.
 
-Make sure PostgreSQL is **running** before proceeding:
+### Node.js
 
-**Windows** — open *Services* (`services.msc`) and check that **postgresql-x64-17** (or your version) is running.
+<details>
+<summary><strong>Windows</strong></summary>
 
-**Linux/macOS:**
+1. Download the **LTS** installer from [nodejs.org](https://nodejs.org/)
+2. Run the installer — keep all defaults
+3. Open a new terminal and verify:
+   ```bash
+   node --version   # Should show v20+
+   npm --version    # Should show 9+
+   ```
+
+</details>
+
+<details>
+<summary><strong>Linux (Ubuntu / Debian)</strong></summary>
+
 ```bash
-sudo systemctl status postgresql    # Check status
-sudo systemctl start postgresql     # Start if not running
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+node --version   # Should show v20+
 ```
+
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+```bash
+brew install node@20
+node --version   # Should show v20+
+```
+
+Or download the installer from [nodejs.org](https://nodejs.org/).
+
+</details>
+
+### PostgreSQL
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+1. Download the installer from [postgresql.org/download/windows](https://www.postgresql.org/download/windows/)
+2. Run the installer:
+   - Set the password for the `postgres` user to **`postgres`** (this matches the app's default config)
+   - Keep the default port **5432**
+   - Finish the installation (pgAdmin is optional but helpful)
+3. PostgreSQL starts automatically as a Windows service. To verify, open *Services* (`services.msc`) and check that **postgresql-x64-17** (or your version) shows "Running".
+
+</details>
+
+<details>
+<summary><strong>Linux (Ubuntu / Debian)</strong></summary>
+
+```bash
+sudo apt install -y postgresql postgresql-contrib
+sudo systemctl enable --now postgresql
+```
+
+Set the password for the `postgres` user to match the app's default config:
+
+```bash
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+```
+
+Verify it's running:
+
+```bash
+sudo systemctl status postgresql
+```
+
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+```bash
+brew install postgresql@14
+brew services start postgresql@14
+```
+
+Set the password:
+
+```bash
+psql -U postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+```
+
+</details>
 
 ## Quick Start
 
