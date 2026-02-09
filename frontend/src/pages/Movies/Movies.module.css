@@ -4,26 +4,50 @@
   padding: 2rem;
 }
 
-.header {
-  margin-bottom: 2rem;
-}
-
-.headerTop {
+.hero {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+}
+
+.heroVideo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  z-index: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
   margin-bottom: 0.5rem;
 }
 
-.title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.subtitle {
-  color: var(--color-text-muted);
-  font-size: 0.875rem;
+.heroSubtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.125rem;
 }
 
 .toolbar {
@@ -223,12 +247,20 @@
 }
 
 @media (max-width: 480px) {
-  .page {
-    padding: 1rem;
+  .hero {
+    height: 250px;
   }
 
-  .title {
-    font-size: 1.25rem;
+  .heroTitle {
+    font-size: 1.75rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.95rem;
+  }
+
+  .page {
+    padding: 1rem;
   }
 
   .toolbar {

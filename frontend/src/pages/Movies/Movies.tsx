@@ -191,18 +191,21 @@ export default function Movies() {
   };
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <div className={styles.headerTop}>
-          <div>
-            <h1 className={styles.title}>Favorite Movies</h1>
-            <p className={styles.subtitle}>
-              A curated list of the best films ever made (according to me)
-            </p>
-          </div>
+    <>
+      <section className={styles.hero}>
+        <video className={styles.heroVideo} autoPlay muted loop playsInline>
+          <source src="/hero-video.mp4" type="video/mp4" />
+        </video>
+        <div className={styles.heroOverlay} />
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>Favorite Movies</h1>
+          <p className={styles.heroSubtitle}>
+            A curated list of the best films ever made (according to me)
+          </p>
         </div>
-      </div>
+      </section>
 
+      <div className={styles.page}>
       <div className={styles.toolbar}>
         <SearchBar value={search} onChange={handleSearch} />
         <AddMovieButton onClick={handleAddClick} />
@@ -305,5 +308,6 @@ export default function Movies() {
         />
       )}
     </div>
+    </>
   );
 }
