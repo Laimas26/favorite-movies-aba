@@ -34,9 +34,6 @@ export class Movie {
   @Column({ nullable: true })
   image: string;
 
-  @Column({ default: false })
-  haveCats: boolean;
-
   @CreateDateColumn()
   createdAt: Date;
 

@@ -14,7 +14,6 @@ export interface Movie {
   rating: number;
   notes: string | null;
   image: string | null;
-  haveCats: boolean;
   createdAt: string;
   userId: string;
   user?: User;
@@ -44,5 +43,4 @@ export interface QueryParams {
   genres?: string;
   ratingMin?: number;
   ratingMax?: number;
-  haveCats?: boolean;
 }

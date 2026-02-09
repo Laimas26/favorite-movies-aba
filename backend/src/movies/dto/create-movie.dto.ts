@@ -4,7 +4,6 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
-  IsBoolean,
   IsArray,
   ArrayMinSize,
   Min,
@@ -48,9 +47,4 @@ export class CreateMovieDto {
   @IsString()
   @MaxLength(1000)
   notes?: string;
-
-  @Transform(({ value }) => value === 'true' || value === true)
-  @IsBoolean()
-  @IsOptional()
-  haveCats?: boolean;
 }

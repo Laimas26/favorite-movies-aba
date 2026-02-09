@@ -44,7 +44,7 @@ export class MoviesService implements OnModuleInit {
   }
 
   async findAll(query: QueryMoviesDto) {
-    const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC', yearFrom, yearTo, genres, ratingMin, ratingMax, haveCats } = query;
+    const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'DESC', yearFrom, yearTo, genres, ratingMin, ratingMax } = query;
 
     const qb = this.moviesRepository
       .createQueryBuilder('movie')
@@ -76,10 +76,6 @@ export class MoviesService implements OnModuleInit {
     }
     if (ratingMax !== undefined) {
       qb.andWhere('movie.rating <= :ratingMax', { ratingMax });
-    }
-
-    if (haveCats !== undefined) {
-      qb.andWhere('movie.haveCats = :haveCats', { haveCats });
     }
 
     if (sortBy === 'genres') {

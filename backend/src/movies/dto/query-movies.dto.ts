@@ -1,5 +1,5 @@
-import { IsOptional, IsString, IsInt, IsIn, IsNumber, IsBoolean, Min, Max } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
+import { IsOptional, IsString, IsInt, IsIn, IsNumber, Min, Max } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class QueryMoviesDto {
   @IsOptional()
@@ -54,9 +54,4 @@ export class QueryMoviesDto {
   @Min(0)
   @Max(10)
   ratingMax?: number;
-
-  @IsOptional()
-  @Transform(({ value }) => value === 'true' || value === true)
-  @IsBoolean()
-  haveCats?: boolean;
 }
