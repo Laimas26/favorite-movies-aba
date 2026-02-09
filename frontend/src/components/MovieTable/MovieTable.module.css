@@ -47,7 +47,7 @@
 }
 
 .table tr:hover td {
-  background: rgba(99, 102, 241, 0.05);
+  background: rgba(210, 160, 90, 0.08);
 }
 
 .titleCell {
@@ -141,7 +141,7 @@
 .expandedRow td {
   padding: 0 1rem;
   border-bottom: none;
-  background: rgba(99, 102, 241, 0.03);
+  background: rgba(210, 160, 90, 0.05);
   position: relative;
 }
 
@@ -170,7 +170,7 @@
 }
 
 .expandedRow:hover td {
-  background: rgba(99, 102, 241, 0.03);
+  background: rgba(210, 160, 90, 0.05);
 }
 
 .expandedWrapper {

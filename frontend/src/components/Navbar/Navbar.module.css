@@ -6,7 +6,7 @@
   height: 100px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(210, 160, 90, 0.3);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -53,7 +53,7 @@
 }
 
 .link {
-  color: var(--color-text-muted);
+  color: var(--color-text);
   text-decoration: underline transparent;
   text-underline-offset: 6px;
   font-size: 0.875rem;
@@ -70,7 +70,7 @@
 .logoutBtn {
   background: transparent;
   border: 1px solid var(--color-border);
-  color: var(--color-text-muted);
+  color: var(--color-text);
   padding: 0.5rem 1rem;
   border-radius: var(--radius);
   cursor: pointer;
@@ -85,7 +85,7 @@
 }
 
 .userLink {
-  color: var(--color-text-muted);
+  color: var(--color-text);
   text-decoration: underline transparent;
   text-underline-offset: 6px;
   font-size: 0.875rem;

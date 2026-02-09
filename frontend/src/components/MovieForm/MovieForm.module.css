@@ -135,7 +135,7 @@
 
 .uploadArea:hover {
   border-color: var(--color-primary);
-  background: rgba(99, 102, 241, 0.05);
+  background: rgba(47, 158, 90, 0.08);
 }
 
 .uploadIcon {
