@@ -32,17 +32,18 @@
 
 .navLink {
   color: var(--color-text);
-  text-decoration: none;
+  text-decoration: underline transparent;
+  text-underline-offset: 6px;
   font-size: 1.125rem;
   font-weight: 500;
   padding: 0.5rem 0;
-  transition: color 0.2s;
+  transition: transform 0.2s, text-decoration-color 0.2s;
   position: relative;
 }
 
 .navLink:hover {
-  color: var(--color-primary);
-  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 .actions {
@@ -53,17 +54,17 @@
 
 .link {
   color: var(--color-text-muted);
-  text-decoration: none;
+  text-decoration: underline transparent;
+  text-underline-offset: 6px;
   font-size: 0.875rem;
   padding: 0.5rem 1rem;
   border-radius: var(--radius);
-  transition: all 0.2s;
+  transition: transform 0.2s, text-decoration-color 0.2s;
 }
 
 .link:hover {
-  color: var(--color-text);
-  background: var(--color-border);
-  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 .logoutBtn {
@@ -85,14 +86,15 @@
 
 .userLink {
   color: var(--color-text-muted);
-  text-decoration: none;
+  text-decoration: underline transparent;
+  text-underline-offset: 6px;
   font-size: 0.875rem;
-  transition: color 0.2s;
+  transition: transform 0.2s, text-decoration-color 0.2s;
 }
 
 .userLink:hover {
-  color: var(--color-primary);
-  text-decoration: underline;
+  text-decoration-color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 .hamburger {
