@@ -79,7 +79,7 @@ export default function Login() {
             Forgot password?
           </button>
         ) : forgotStatus === 'sent' ? (
-          <p className={styles.forgotSuccess}>If an account with that email exists, a reset link has been sent. Check your inbox (or the backend console).</p>
+          <p className={styles.forgotSuccess}>If an account with that email exists, a reset link has been generated. Check the backend console logs for the preview URL.</p>
         ) : (
           <form className={styles.forgotForm} onSubmit={handleForgotSubmit}>
             <input

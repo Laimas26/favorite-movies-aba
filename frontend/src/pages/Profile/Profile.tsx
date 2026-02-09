@@ -42,7 +42,7 @@ export default function Profile() {
         </div>
         <div className={styles.divider} />
         {resetStatus === 'sent' ? (
-          <p className={styles.successMsg}>Reset link sent to your email! Check your inbox (or the backend console for the Ethereal preview link).</p>
+          <p className={styles.successMsg}>Reset link generated! Check the backend console logs for the preview URL.</p>
         ) : resetStatus === 'error' ? (
           <p className={styles.errorMsg}>Something went wrong. Please try again.</p>
         ) : (
