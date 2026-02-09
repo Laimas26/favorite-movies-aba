@@ -1,6 +1,6 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, MoreThan } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity.js';
 
@@ -36,6 +36,30 @@ export class UsersService {
       name,
     });
     return this.usersRepository.save(user);
+  }
+
+  async setResetToken(email: string, token: string, expiry: Date): Promise<boolean> {
+    const user = await this.findByEmail(email);
+    if (!user) return false;
+    user.resetToken = token;
+    user.resetTokenExpiry = expiry;
+    await this.usersRepository.save(user);
+    return true;
+  }
+
+  async findByResetToken(token: string): Promise<User | null> {
+    return this.usersRepository.findOneBy({
+      resetToken: token,
+      resetTokenExpiry: MoreThan(new Date()),
+    });
+  }
+
+  async updatePassword(userId: string, hashedPassword: string): Promise<void> {
+    await this.usersRepository.update(userId, {
+      password: hashedPassword,
+      resetToken: null as any,
+      resetTokenExpiry: null as any,
+    });
   }
 
   async findOrCreateByGoogle(

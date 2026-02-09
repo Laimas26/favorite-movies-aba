@@ -8,6 +8,7 @@ import About from './pages/About/About';
 import Profile from './pages/Profile/Profile';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAppSelector((state) => state.auth);
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </main>
       <Footer />

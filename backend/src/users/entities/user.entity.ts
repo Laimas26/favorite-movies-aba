@@ -26,6 +26,14 @@ export class User {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  @Exclude()
+  resetToken: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  @Exclude()
+  resetTokenExpiry: Date;
+
   @CreateDateColumn()
   createdAt: Date;
 

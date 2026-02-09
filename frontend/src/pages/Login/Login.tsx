@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { login, googleLogin, clearError } from '../../store/slices/authSlice';
+import api from '../../api/axios';
 import styles from './Login.module.css';
 
 export default function Login() {
@@ -12,6 +13,9 @@ export default function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotStatus, setForgotStatus] = useState<'idle' | 'loading' | 'sent'>('idle');
 
   useEffect(() => {
     if (user) navigate('/');
@@ -24,6 +28,17 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(login({ email, password }));
+  };
+
+  const handleForgotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotStatus('loading');
+    try {
+      await api.post('/auth/forgot-password', { email: forgotEmail });
+    } catch {
+      // Always show success to not leak email existence
+    }
+    setForgotStatus('sent');
   };
 
   return (
@@ -59,6 +74,27 @@ export default function Login() {
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
+        {!showForgot ? (
+          <button className={styles.forgotLink} onClick={() => setShowForgot(true)} type="button">
+            Forgot password?
+          </button>
+        ) : forgotStatus === 'sent' ? (
+          <p className={styles.forgotSuccess}>If an account with that email exists, a reset link has been sent. Check your inbox (or the backend console).</p>
+        ) : (
+          <form className={styles.forgotForm} onSubmit={handleForgotSubmit}>
+            <input
+              className={styles.input}
+              type="email"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              required
+              placeholder="Enter your email"
+            />
+            <button className={styles.forgotBtn} type="submit" disabled={forgotStatus === 'loading'}>
+              {forgotStatus === 'loading' ? 'Sending...' : 'Send reset link'}
+            </button>
+          </form>
+        )}
         <div className={styles.divider}>
           <span>or continue with</span>
         </div>
