@@ -12,7 +12,7 @@ export default function Footer() {
           </span>{' '}
           saugomos 🐱
         </p>
-        <p className={styles.author}>Laimonas Rupeika &bull; 2025</p>
+        <p className={styles.author}>Laimonas Rupeika &bull; 2026</p>
       </div>
     </footer>
   );

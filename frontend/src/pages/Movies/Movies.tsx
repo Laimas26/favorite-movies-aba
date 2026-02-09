@@ -296,6 +296,42 @@ export default function Movies() {
       )}
 
       <section className={styles.newSection}>
+        <div className={styles.aboutCard}>
+          <h2 className={styles.aboutTitle}>What's this all about?</h2>
+          <p className={styles.aboutSubtitle}>
+            A personal movie tracker where I keep a curated list of my all-time
+            favorite films. Add movies, rate them, leave notes, and organize
+            my cinematic journey.
+          </p>
+          <div className={styles.aboutFeatures}>
+            <div className={styles.aboutFeature}>
+              <span className={styles.aboutIcon}>&#127916;</span>
+              <h3>Track Movies</h3>
+              <p>Keep a personal list of favorite films with posters.</p>
+            </div>
+            <div className={styles.aboutFeature}>
+              <span className={styles.aboutIcon}>&#11088;</span>
+              <h3>Rate &amp; Review</h3>
+              <p>Rate movies and add notes to remember why you loved them.</p>
+            </div>
+            <div className={styles.aboutFeature}>
+              <span className={styles.aboutIcon}>&#128269;</span>
+              <h3>Search &amp; Sort</h3>
+              <p>Quickly find any movie with search, sort by title, year, or rating.</p>
+            </div>
+          </div>
+          <div className={styles.aboutTech}>
+            <h3 className={styles.aboutTechTitle}>Built with</h3>
+            <div className={styles.aboutTechList}>
+              <span className={styles.aboutTechBadge}>React</span>
+              <span className={styles.aboutTechBadge}>TypeScript</span>
+              <span className={styles.aboutTechBadge}>NestJS</span>
+              <span className={styles.aboutTechBadge}>PostgreSQL</span>
+              <span className={styles.aboutTechBadge}>Redux Toolkit</span>
+              <span className={styles.aboutTechBadge}>CSS Modules</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       {showForm && (

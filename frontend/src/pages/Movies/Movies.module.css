@@ -239,11 +239,100 @@
 
 .newSection {
   margin-top: 3rem;
-  padding: 2rem;
+  padding: 3rem 2rem;
   background: rgba(210, 160, 90, 0.12);
-  min-height: 120px;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
+}
+
+.aboutCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 2.5rem;
+  max-width: 680px;
+  margin: 0 auto;
+  box-shadow: 0 0 24px rgba(210, 160, 90, 0.3);
+}
+
+.aboutTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.aboutSubtitle {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.aboutFeatures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.aboutFeature {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.aboutFeature h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.aboutFeature p {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.aboutIcon {
+  font-size: 1.75rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.aboutTech {
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.5rem;
+}
+
+.aboutTechTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.aboutTechList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.aboutTechBadge {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .aboutFeatures {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -278,5 +367,17 @@
 
   .filterLabel {
     min-width: unset;
+  }
+
+  .newSection {
+    padding: 2rem 1rem;
+  }
+
+  .aboutCard {
+    padding: 1.5rem;
+  }
+
+  .aboutTitle {
+    font-size: 1.25rem;
   }
 }
