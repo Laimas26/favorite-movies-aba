@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useCallback } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { logout } from '../../store/slices/authSlice';
 import logo from '../../assets/logo.png';
@@ -9,8 +9,21 @@ export default function Navbar() {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const closeMenu = () => setMenuOpen(false);
+
+  const scrollToSection = useCallback((id: string) => {
+    if (location.pathname === '/') {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/');
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [location.pathname, navigate]);
 
   return (
     <>
@@ -19,12 +32,12 @@ export default function Navbar() {
           <img src={logo} alt="Not Your Movies" className={styles.logoImg} />
         </Link>
         <div className={styles.navLinks}>
-          <Link to="/" className={styles.navLink}>
+          <a href="#my-list" className={styles.navLink} onClick={(e) => { e.preventDefault(); scrollToSection('my-list'); }}>
             My list
-          </Link>
-          <Link to="/about" className={styles.navLink}>
+          </a>
+          <a href="#about" className={styles.navLink} onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>
             About
-          </Link>
+          </a>
         </div>
         <div className={styles.actions}>
           {user ? (
@@ -72,12 +85,12 @@ export default function Navbar() {
             &#10005;
           </button>
         </div>
-        <Link to="/" className={styles.mobileLink} onClick={closeMenu}>
+        <a href="#my-list" className={styles.mobileLink} onClick={(e) => { e.preventDefault(); closeMenu(); scrollToSection('my-list'); }}>
           My list
-        </Link>
-        <Link to="/about" className={styles.mobileLink} onClick={closeMenu}>
+        </a>
+        <a href="#about" className={styles.mobileLink} onClick={(e) => { e.preventDefault(); closeMenu(); scrollToSection('about'); }}>
           About
-        </Link>
+        </a>
         {user ? (
           <>
             <Link to="/profile" className={styles.mobileLink} onClick={closeMenu}>

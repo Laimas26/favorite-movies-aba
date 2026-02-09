@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
@@ -41,12 +41,16 @@ export default function Movies() {
   const [localRatingMin, setLocalRatingMin] = useState(ratingMin ?? 0);
   const [localRatingMax, setLocalRatingMax] = useState(ratingMax ?? 10);
   const [localGenres, setLocalGenres] = useState<string[]>(filterGenres);
+  const [editingMovie, setEditingMovie] = useState<Movie | undefined>();
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formLoading, setFormLoading] = useState(false);
+  const [aboutVisible, setAboutVisible] = useState(false);
+  const aboutCardRef = useRef<HTMLDivElement>(null);
 
   if (!user) {
     return (
-      <div className={styles.page}>
+      <div className={styles.authPage}>
         <div className={styles.authGate}>
-          <div className={styles.authGateIcon}>&#127916;</div>
           <h2>Hold on!</h2>
           <p>You need to log in to see my fabulous movie list.</p>
           <Link to="/login" className={styles.authGateBtn}>
@@ -61,9 +65,6 @@ export default function Movies() {
       </div>
     );
   }
-  const [editingMovie, setEditingMovie] = useState<Movie | undefined>();
-  const [formError, setFormError] = useState<string | null>(null);
-  const [formLoading, setFormLoading] = useState(false);
 
   const fetchParams = {
     page, limit, search, sortBy, sortOrder, yearFrom, yearTo, ratingMin, ratingMax,
@@ -73,6 +74,17 @@ export default function Movies() {
   useEffect(() => {
     dispatch(fetchMovies(fetchParams));
   }, [dispatch, page, limit, search, sortBy, sortOrder, yearFrom, yearTo, filterGenres, ratingMin, ratingMax]);
+
+  useEffect(() => {
+    const el = aboutCardRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { setAboutVisible(entry.isIntersecting); },
+      { threshold: 0.15 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -206,7 +218,7 @@ export default function Movies() {
       </section>
 
       <div className={styles.page}>
-      <div className={styles.toolbar}>
+      <div id="my-list" className={styles.toolbar}>
         <SearchBar value={search} onChange={handleSearch} />
         <AddMovieButton onClick={handleAddClick} />
       </div>
@@ -295,8 +307,8 @@ export default function Movies() {
         </>
       )}
 
-      <section className={styles.newSection}>
-        <div className={styles.aboutCard}>
+      <section id="about" className={styles.newSection}>
+        <div ref={aboutCardRef} className={`${styles.aboutCard} ${aboutVisible ? styles.aboutCardVisible : ''}`}>
           <h2 className={styles.aboutTitle}>What's this all about?</h2>
           <p className={styles.aboutSubtitle}>
             A personal movie tracker where I keep a curated list of my all-time

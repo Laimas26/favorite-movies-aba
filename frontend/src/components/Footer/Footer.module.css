@@ -9,6 +9,7 @@
 .content {
   max-width: 1000px;
   margin: 0 auto;
+  padding-top: 0.75rem;
 }
 
 .rights {
