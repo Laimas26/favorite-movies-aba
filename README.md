@@ -13,20 +13,22 @@ A full-stack web application for managing a personal favorite movies collection.
 
 ## Prerequisites
 
-You need **Node.js** (>= 20) and **PostgreSQL** (>= 14). Follow the instructions for your operating system below.
+You need **Node.js** (>= 20.19 or >= 22.12) and **PostgreSQL** (>= 14). Follow the instructions for your operating system below.
 
 ### Node.js
 
 <details>
 <summary><strong>Windows</strong></summary>
 
-1. Download the **LTS** installer from [nodejs.org](https://nodejs.org/)
+1. Download the **LTS** installer from [nodejs.org](https://nodejs.org/) (v22.x recommended)
 2. Run the installer — keep all defaults
 3. Open a new terminal and verify:
    ```bash
-   node --version   # Should show v20+
-   npm --version    # Should show 9+
+   node --version   # Should show v22+
+   npm --version    # Should show 10+
    ```
+
+> **PowerShell users:** If `npm` gives a "scripts is disabled on this system" error, run `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` in an elevated PowerShell, or use **Git Bash** / **CMD** instead.
 
 </details>
 
@@ -34,9 +36,9 @@ You need **Node.js** (>= 20) and **PostgreSQL** (>= 14). Follow the instructions
 <summary><strong>Linux (Ubuntu / Debian)</strong></summary>
 
 ```bash
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt install -y nodejs
-node --version   # Should show v20+
+node --version   # Should show v22+
 ```
 
 </details>
@@ -45,8 +47,8 @@ node --version   # Should show v20+
 <summary><strong>macOS</strong></summary>
 
 ```bash
-brew install node@20
-node --version   # Should show v20+
+brew install node@22
+node --version   # Should show v22+
 ```
 
 Or download the installer from [nodejs.org](https://nodejs.org/).
@@ -272,3 +274,11 @@ favorite-movies/
 |----------|-------------|---------|
 | `VITE_API_URL` | Backend API base URL | `http://localhost:3001` |
 | `VITE_GOOGLE_CLIENT_ID` | Google OAuth client ID (optional) | — |
+
+## Troubleshooting
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| `'concurrently' is not recognized` | Root dependencies not installed | Run `npm install` in the project root, then `npm run dev` again |
+| Vite error: `crypto.hash is not a function` | Node.js version too old (Vite requires 20.19+ or 22.12+) | Update Node.js to the latest LTS from [nodejs.org](https://nodejs.org/) |
+| `npm.ps1 cannot be loaded because running scripts is disabled` | Windows PowerShell execution policy | Run `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` or use Git Bash / CMD instead |
