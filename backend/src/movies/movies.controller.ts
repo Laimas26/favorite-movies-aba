@@ -82,18 +82,18 @@ export class MoviesController {
   update(
     @Param('id') id: string,
     @Body() dto: UpdateMovieDto,
-    @CurrentUser() user: { id: string },
+    @CurrentUser() user: { id: string; email: string },
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.moviesService.update(id, dto, user.id, file?.filename);
+    return this.moviesService.update(id, dto, user.id, user.email, file?.filename);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(
     @Param('id') id: string,
-    @CurrentUser() user: { id: string },
+    @CurrentUser() user: { id: string; email: string },
   ) {
-    return this.moviesService.remove(id, user.id);
+    return this.moviesService.remove(id, user.id, user.email);
   }
 }

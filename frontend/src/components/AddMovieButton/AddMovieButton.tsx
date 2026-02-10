@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAppSelector } from '../../store/hooks';
+import { ADMIN_EMAILS } from '../../constants';
 import styles from './AddMovieButton.module.css';
 
 const FUNNY_MESSAGES = [
@@ -28,8 +29,7 @@ export default function AddMovieButton({ onClick }: Props) {
     setShowTooltip(true);
   };
 
-  const OWNER_EMAILS = ['laimonas.rupeika@gmail.com', 'owner@owner.com'];
-  const isAllowed = OWNER_EMAILS.includes(user?.email ?? '');
+  const isAllowed = ADMIN_EMAILS.includes(user?.email ?? '');
 
   if (isAllowed) {
     return (

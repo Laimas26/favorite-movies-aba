@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { ADMIN_EMAILS } from '../../constants';
 import {
   fetchMovies,
   addMovie,
@@ -303,7 +304,7 @@ export default function Movies() {
             onEdit={handleEdit}
             onDelete={handleDelete}
             currentUserId={user?.id ?? null}
-            showActions={['laimonas.rupeika@gmail.com', 'owner@owner.com'].includes(user?.email ?? '')}
+            showActions={ADMIN_EMAILS.includes(user?.email ?? '')}
           />
           <Pagination
             page={page}

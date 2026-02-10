@@ -129,22 +129,20 @@ export default function MovieTable({
                   <td className={styles.rating}><span className={styles.ratingStar}>&#9733;</span> {Number(movie.rating) % 1 === 0 ? Math.round(Number(movie.rating)) : movie.rating}/10</td>
                   {showActions && (
                     <td>
-                      {movie.userId === currentUserId && (
-                        <div className={styles.actions}>
-                          <button
-                            className={styles.editBtn}
-                            onClick={(e) => { e.stopPropagation(); onEdit(movie); }}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className={styles.deleteBtn}
-                            onClick={(e) => { e.stopPropagation(); onDelete(movie.id); }}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      )}
+                      <div className={styles.actions}>
+                        <button
+                          className={styles.editBtn}
+                          onClick={(e) => { e.stopPropagation(); onEdit(movie); }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className={styles.deleteBtn}
+                          onClick={(e) => { e.stopPropagation(); onDelete(movie.id); }}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   )}
                 </tr>

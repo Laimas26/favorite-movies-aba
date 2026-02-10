@@ -5,6 +5,7 @@ import { fetchMovieById, clearCurrentMovie, deleteMovie, updateMovie } from '../
 import MovieForm from '../../components/MovieForm/MovieForm';
 import type { MovieFormData } from '../../components/MovieForm/MovieForm';
 import GenreTag from '../../components/GenreTag/GenreTag';
+import { ADMIN_EMAILS } from '../../constants';
 import styles from './MovieDetail.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -23,7 +24,7 @@ export default function MovieDetail() {
     return () => { dispatch(clearCurrentMovie()); };
   }, [dispatch, id]);
 
-  const isOwner = user && movie && movie.userId === user.id;
+  const isOwner = user && movie && (movie.userId === user.id || ADMIN_EMAILS.includes(user.email));
 
   const handleDelete = async () => {
     if (movie && window.confirm('Are you sure you want to delete this movie?')) {

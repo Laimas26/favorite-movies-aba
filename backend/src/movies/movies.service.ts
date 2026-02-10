@@ -14,6 +14,8 @@ import { CreateMovieDto } from './dto/create-movie.dto.js';
 import { UpdateMovieDto } from './dto/update-movie.dto.js';
 import { QueryMoviesDto } from './dto/query-movies.dto.js';
 
+const ADMIN_EMAILS = ['laimonas.rupeika@gmail.com', 'owner@owner.com'];
+
 @Injectable()
 export class MoviesService implements OnModuleInit {
   private readonly logger = new Logger(MoviesService.name);
@@ -119,12 +121,12 @@ export class MoviesService implements OnModuleInit {
     return this.moviesRepository.save(movie);
   }
 
-  async update(id: string, dto: UpdateMovieDto, userId: string, imageFilename?: string) {
+  async update(id: string, dto: UpdateMovieDto, userId: string, userEmail: string, imageFilename?: string) {
     const movie = await this.moviesRepository.findOneBy({ id });
     if (!movie) {
       throw new NotFoundException('Movie not found');
     }
-    if (movie.userId !== userId) {
+    if (movie.userId !== userId && !ADMIN_EMAILS.includes(userEmail)) {
       throw new ForbiddenException('You can only edit your own movies');
     }
     if (imageFilename) {
@@ -137,12 +139,12 @@ export class MoviesService implements OnModuleInit {
     return this.moviesRepository.save(movie);
   }
 
-  async remove(id: string, userId: string) {
+  async remove(id: string, userId: string, userEmail: string) {
     const movie = await this.moviesRepository.findOneBy({ id });
     if (!movie) {
       throw new NotFoundException('Movie not found');
     }
-    if (movie.userId !== userId) {
+    if (movie.userId !== userId && !ADMIN_EMAILS.includes(userEmail)) {
       throw new ForbiddenException('You can only delete your own movies');
     }
     if (movie.image) {
