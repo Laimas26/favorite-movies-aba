@@ -154,7 +154,7 @@ On the first run, wait a few seconds for TypeORM to create the database tables, 
 npm run db:seed
 ```
 
-This populates the database with 12 movies (with poster images) and a test account.
+This populates the database with 12 movies (with poster images) and test accounts.
 
 ### 5. Open in browser
 
@@ -229,7 +229,8 @@ Go to http://localhost:5173 and log in with one of the test accounts:
 favorite-movies/
 ├── backend/                  # NestJS API
 │   ├── scripts/
-│   │   └── create-db.js      # Database auto-creation script
+│   │   ├── create-db.js      # Database auto-creation script
+│   │   └── seed.js            # Seed sample movies and test accounts
 │   ├── src/
 │   │   ├── auth/             # JWT strategy, guards, Google OAuth, password reset, email service
 │   │   ├── users/            # User entity and service
@@ -240,7 +241,7 @@ favorite-movies/
 │   ├── public/               # Static assets (hero video, images)
 │   ├── src/
 │   │   ├── components/       # MovieTable, MovieForm, Navbar, GenreTag, etc.
-│   │   ├── pages/            # Movies, Login, Register, Profile, MovieDetail
+│   │   ├── pages/            # Movies, Login, Register, Profile, MovieDetail, About, ResetPassword
 │   │   ├── store/            # Redux Toolkit (authSlice, moviesSlice)
 │   │   ├── api/              # Axios instance with JWT interceptor
 │   │   └── types/            # TypeScript interfaces
